@@ -141,6 +141,9 @@ does not need.
 ## Supported API versions
 
 - [1.27](https://docs.docker.com/engine/api/v1.27/)
+- [1.28](https://docs.docker.com/engine/api/v1.28/)
+- [1.29](https://docs.docker.com/engine/api/v1.29/)
+- [1.30](https://docs.docker.com/engine/api/v1.30/)
 
 ## Feedback
 
