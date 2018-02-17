@@ -1,5 +1,5 @@
 FROM haproxy:1.7-alpine
-MAINTAINER Tecnativa <info@tecnativa.com>
+LABEL maintainer="Tecnativa <info@tecnativa.com>"
 
 EXPOSE 2375
 ENV AUTH=0 \
