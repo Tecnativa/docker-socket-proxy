@@ -23,6 +23,7 @@ ENV AUTH=0 \
     VERSION=1 \
     VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+VOLUME /run/docker-filtered
 
 # Metadata
 ARG VCS_REF
