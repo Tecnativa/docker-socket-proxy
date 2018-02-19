@@ -46,12 +46,17 @@ requests that should never happen.
             -d --privileged \
             --name dockerproxy \
             -v /var/run/docker.sock:/var/run/docker.sock \
+            -v /run/docker-filtered:/run/docker-filtered \
             -p 127.0.0.1:2375:2375 \
             tecnativa/docker-socket-proxy
 
 2.  Connect your local docker client to that socket:
 
         $ export DOCKER_HOST=tcp://localhost
+
+or
+
+        $ export DOCKER_HOST=unix:///run/docker-filtered/docker.sock
 
 3.  You can see the docker version:
 
@@ -137,6 +142,13 @@ does not need.
 - `SYSTEM`
 - `TASKS`
 - `VOLUMES`
+
+## Grant or revoke access to API listener
+
+There are two listeners for the API and each of them can be disable the same way as the previous features:
+
+- `SOCK_NETWORK` for the port tcp/2375
+- `SOCK_DISK` for `/run/docker-filtered/docker.sock`
 
 ## Supported API versions
 

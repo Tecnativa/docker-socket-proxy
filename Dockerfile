@@ -1,7 +1,8 @@
 FROM haproxy:1.7-alpine
-MAINTAINER Tecnativa <info@tecnativa.com>
+LABEL maintainer="Tecnativa <info@tecnativa.com>"
 
 EXPOSE 2375
+VOLUME /run/docker-filtered
 ENV AUTH=0 \
     BUILD=0 \
     COMMIT=0 \
@@ -21,13 +22,15 @@ ENV AUTH=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0
+    VOLUMES=0 \
+    SOCK_NETWORK=1 \
+    SOCK_DISK=1
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
 # Metadata
 ARG VCS_REF
 ARG BUILD_DATE
-LABEL org.label-schema.schema-version="1.0" \
+LABEL org.label-schema.schema-version="1.1" \
       org.label-schema.vendor=Tecnativa \
       org.label-schema.license=Apache-2.0 \
       org.label-schema.build-date="$BUILD_DATE" \
