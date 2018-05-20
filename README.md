@@ -40,7 +40,7 @@ requests that should never happen.
 
 ## Usage
 
-1.  Run the API proxy:
+1.  Run the API proxy (`--privileged` flag is required here because it connects with the docker socket, which is a privileged connection in some SELinux/AppArmor contexts and would get locked otherwise):
 
         $ docker container run \
             -d --privileged \
