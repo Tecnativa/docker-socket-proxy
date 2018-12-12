@@ -1,4 +1,4 @@
-FROM haproxy:1.7-alpine
+FROM haproxy:1.8-alpine
 MAINTAINER Tecnativa <info@tecnativa.com>
 
 EXPOSE 2375
