@@ -4,7 +4,9 @@ EXPOSE 2375
 ENV AUTH=0 \
     BUILD=0 \
     COMMIT=0 \
+    CONFIGS=0 \
     CONTAINERS=0 \
+    DISTRIBUTION=0 \
     EVENTS=1 \
     EXEC=0 \
     IMAGES=0 \

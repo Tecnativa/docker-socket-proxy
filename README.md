@@ -125,7 +125,9 @@ does not need.
 
 - `BUILD`
 - `COMMIT`
+- `CONFIGS`
 - `CONTAINERS`
+- `DISTRIBUTION`
 - `EXEC`
 - `IMAGES`
 - `INFO`
@@ -144,6 +146,7 @@ does not need.
 - [1.28](https://docs.docker.com/engine/api/v1.28/)
 - [1.29](https://docs.docker.com/engine/api/v1.29/)
 - [1.30](https://docs.docker.com/engine/api/v1.30/)
+- [1.37](https://docs.docker.com/engine/api/v1.37/)
 
 ## Feedback
 
