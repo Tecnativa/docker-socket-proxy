@@ -1,7 +1,8 @@
 FROM haproxy:1.9-alpine
 
 EXPOSE 2375
-ENV AUTH=0 \
+ENV ALLOW_RESTARTS=0 \
+    AUTH=0 \
     BUILD=0 \
     COMMIT=0 \
     CONFIGS=0 \
