@@ -18,6 +18,7 @@ ENV AUTH=0 \
     POST=0 \
     SECRETS=0 \
     SERVICES=0 \
+    SESSION=0 \
     SWARM=0 \
     SYSTEM=0 \
     TASKS=0 \
