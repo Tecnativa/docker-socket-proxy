@@ -135,6 +135,7 @@ does not need.
 - `NODES`
 - `PLUGINS`
 - `SERVICES`
+- `SESSION`
 - `SWARM`
 - `SYSTEM`
 - `TASKS`
