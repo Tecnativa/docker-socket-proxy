@@ -7,7 +7,7 @@
 
 ## What?
 
-This is a security-enhaced proxy for the Docker Socket.
+This is a security-enhanced proxy for the Docker Socket.
 
 ## Why?
 
