@@ -1,4 +1,5 @@
-FROM haproxy:1.9-alpine
+ARG REPO=library
+FROM ${REPO}/haproxy:1.9-alpine
 
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
