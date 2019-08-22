@@ -141,6 +141,12 @@ does not need.
 - `TASKS`
 - `VOLUMES`
 
+## Logging
+
+You can set the logging level or severity level of the messages to be logged with the
+ environment variable `LOG_LEVEL`. Defaul value is info. Possible values are: debug, 
+ info, notice, warning, err, crit, alert and emerg.
+
 ## Supported API versions
 
 - [1.27](https://docs.docker.com/engine/api/v1.27/)
