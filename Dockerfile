@@ -25,7 +25,8 @@ ENV ALLOW_RESTARTS=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0
+    VOLUMES=0 \
+    LOG_LEVEL=info
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
 # Metadata
