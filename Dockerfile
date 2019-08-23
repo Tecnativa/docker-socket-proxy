@@ -13,6 +13,7 @@ ENV ALLOW_RESTARTS=0 \
     EXEC=0 \
     IMAGES=0 \
     INFO=0 \
+    LOG_LEVEL=info \
     NETWORKS=0 \
     NODES=0 \
     PING=1 \
@@ -25,8 +26,7 @@ ENV ALLOW_RESTARTS=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0 \
-    LOG_LEVEL=info
+    VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
 # Metadata
