@@ -119,27 +119,31 @@ by default. Maximum caution when enabling these.
 
 #### Not always needed
 
-You will possibly need to grant access to some of these API sections, which are
-not so extremely critical but can expose some information that your service
-does not need.
+You will possibly need to grant access to some of these API sections, which 
+can expose some information that your service does not need.
 
-- `BUILD`
-- `COMMIT`
-- `CONFIGS`
-- `CONTAINERS`
-- `DISTRIBUTION`
-- `EXEC`
-- `IMAGES`
-- `INFO`
-- `NETWORKS`
-- `NODES`
-- `PLUGINS`
-- `SERVICES`
-- `SESSION`
-- `SWARM`
-- `SYSTEM`
-- `TASKS`
-- `VOLUMES`
+| GET            | POST                  |
+|:---------------|:----------------------|
+| `BUILD`        | `ALLOW_RESTARTS`      |
+| `COMMIT`       | `CONTAINERS_PRUNE`    |
+| `CONFIGS`      | `CONTAINERS_CREATE`   |
+| `CONTAINERS`   | `CONTAINERS_RESIZE`   |
+| `DISTRIBUTION` | `CONTAINERS_START`    |
+| `EXEC`         | `CONTAINERS_UPDATE`   |
+| `IMAGES`       | `CONTAINERS_RENAME`   |
+| `INFO`         | `CONTAINERS_PAUSE`    |
+| `NETWORKS`     | `CONTAINERS_UNPAUSE`  |
+| `NODES`        | `CONTAINERS_ATTACH`   |
+| `PLUGINS`      | `CONTAINERS_WAIT`     |
+| `SERVICES`     | `CONTAINERS_EXEC`     |
+| `SESSION`      | `VOLUMES_CREATE`      |
+| `SWARM`        | `VOLUMES_PRUNE`       |
+| `SYSTEM`       | `NETWORKS_CREATE`     |
+| `TASKS`        | `NETWORKS_PRUNE`      |
+| `VOLUMES`      | `NETWORKS_CONNECT`    |
+|                | `NETWORKS_DISCONNECT` |
+
+`ALLOW_RESTARTS` allows to `kill`, `stop` and `restart` containers
 
 ## Logging
 
