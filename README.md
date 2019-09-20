@@ -122,26 +122,26 @@ by default. Maximum caution when enabling these.
 You will possibly need to grant access to some of these API sections, which 
 can expose some information that your service does not need.
 
-| GET            | POST                  |
-|:---------------|:----------------------|
-| `BUILD`        | `ALLOW_RESTARTS`      |
-| `COMMIT`       | `CONTAINERS_PRUNE`    |
-| `CONFIGS`      | `CONTAINERS_CREATE`   |
-| `CONTAINERS`   | `CONTAINERS_RESIZE`   |
-| `DISTRIBUTION` | `CONTAINERS_START`    |
-| `EXEC`         | `CONTAINERS_UPDATE`   |
-| `IMAGES`       | `CONTAINERS_RENAME`   |
-| `INFO`         | `CONTAINERS_PAUSE`    |
-| `NETWORKS`     | `CONTAINERS_UNPAUSE`  |
-| `NODES`        | `CONTAINERS_ATTACH`   |
-| `PLUGINS`      | `CONTAINERS_WAIT`     |
-| `SERVICES`     | `CONTAINERS_EXEC`     |
-| `SESSION`      | `VOLUMES_CREATE`      |
-| `SWARM`        | `VOLUMES_PRUNE`       |
-| `SYSTEM`       | `NETWORKS_CREATE`     |
-| `TASKS`        | `NETWORKS_PRUNE`      |
-| `VOLUMES`      | `NETWORKS_CONNECT`    |
-|                | `NETWORKS_DISCONNECT` |
+| GET            | POST                  | DELETE              |
+|:---------------|:----------------------|:--------------------|
+| `BUILD`        | `ALLOW_RESTARTS`      | `NETWORKS_DELETE`   |  
+| `COMMIT`       | `CONTAINERS_PRUNE`    | `CONTAINERS_DELETE` |    
+| `CONFIGS`      | `CONTAINERS_CREATE`   | `IMAGES_DELETE`     |
+| `CONTAINERS`   | `CONTAINERS_RESIZE`   | `VOLUMES_DELETE`    | 
+| `DISTRIBUTION` | `CONTAINERS_START`    |                     |
+| `EXEC`         | `CONTAINERS_UPDATE`   |                     |
+| `IMAGES`       | `CONTAINERS_RENAME`   |                     |
+| `INFO`         | `CONTAINERS_PAUSE`    |                     |
+| `NETWORKS`     | `CONTAINERS_UNPAUSE`  |                     |
+| `NODES`        | `CONTAINERS_ATTACH`   |                     |
+| `PLUGINS`      | `CONTAINERS_WAIT`     |                     |
+| `SERVICES`     | `CONTAINERS_EXEC`     |                     |
+| `SESSION`      | `VOLUMES_CREATE`      |                     |
+| `SWARM`        | `VOLUMES_PRUNE`       |                     |
+| `SYSTEM`       | `NETWORKS_CREATE`     |                     |
+| `TASKS`        | `NETWORKS_PRUNE`      |                     |
+| `VOLUMES`      | `NETWORKS_CONNECT`    |                     |
+|                | `NETWORKS_DISCONNECT` |                     |
 
 `ALLOW_RESTARTS` allows to `kill`, `stop` and `restart` containers
 
