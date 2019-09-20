@@ -142,6 +142,8 @@ can expose some information that your service does not need.
 | `TASKS`        | `NETWORKS_PRUNE`      |                     |
 | `VOLUMES`      | `NETWORKS_CONNECT`    |                     |
 |                | `NETWORKS_DISCONNECT` |                     |
+|                | `IMAGES_CREATE`       |                     |
+|                | `IMAGES_PRUNE`        |                     |
 
 `ALLOW_RESTARTS` allows to `kill`, `stop` and `restart` containers
 
