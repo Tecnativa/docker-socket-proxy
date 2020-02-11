@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Use manifest-tool to create the manifest, given the experimental
+# "docker manifest" command isn't available yet on Docker Hub.
+
+TAG_ROOT=${DOCKER_TAG%-*}
+TARGET_ARCH=""
+case "$DOCKER_TAG" in
+    *amd64)
+        TARGET_ARCH="amd64"
+        ;;
+    *arm32v5)
+        TARGET_ARCH="arm/v5"
+        ;;
+    *arm32v6)
+        TARGET_ARCH="arm/v6"
+        ;;
+    *arm32v7)
+        TARGET_ARCH="arm/v7"
+        ;;
+    *arm64v8)
+        TARGET_ARCH="arm64/v8"
+        ;;
+    *i386)
+        TARGET_ARCH="i386"
+        ;;
+    *ppc64le)
+        TARGET_ARCH="ppc64le"
+        ;;
+    *s390x)
+        TARGET_ARCH="s390x"
+        ;;
+    *)
+        echo "Unknown target arch, skip manifest push"
+        exit 0
+        ;;
+esac
+
+# If the tag is essentially only the arch, we use latest
+if [[ "$TAG_ROOT" == "$TARGET_ARCH" ]]; then
+    TAG_ROOT="latest"
+fi
+
+curl -Lo manifest-tool https://github.com/estesp/manifest-tool/releases/download/v1.0.0/manifest-tool-linux-amd64
+chmod +x manifest-tool
+
+# Generate manifest file for this repo and tag root
+sed "s#{DOCKER_REPO}#${DOCKER_REPO%:*}#;s#{TAG_ROOT}#${TAG_ROOT}#" multi-arch-manifest-tmpl.yml > multi-arch-manifest.yml
+./manifest-tool push from-spec --ignore-missing multi-arch-manifest.yml
+
+# Fix arch for image tags
+./manifest-tool push from-args \
+    --platforms "linux/$TARGET_ARCH" \
+    --template "$DOCKER_REPO:$DOCKER_TAG" \
+    --target "$DOCKER_REPO:$DOCKER_TAG"
