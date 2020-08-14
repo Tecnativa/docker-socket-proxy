@@ -115,7 +115,8 @@ by default. Maximum caution when enabling these.
 - `AUTH`
 - `SECRETS`
 - `POST`: When disabled, only `GET` and `HEAD` operations are allowed, meaning
-  any section of the API is read-only.
+  any section of the API is read-only. Note that this is a global 
+- `DELETE`: Enables or disables all `DELETE` operations
 
 #### Not always needed
 
