@@ -1,0 +1,55 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - devel
+      - stable
+  workflow_dispatch:
+    inputs:
+      pytest_addopts:
+        description:
+          Extra options for pytest; use -vv for full details; see
+          https://docs.pytest.org/en/latest/example/simple.html#how-to-change-command-line-options-defaults
+        required: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  LANG: "en_US.utf-8"
+  LC_ALL: "en_US.utf-8"
+  PIP_CACHE_DIR: ${{ github.workspace }}/.cache.~/pip
+  PIPX_HOME: ${{ github.workspace }}/.cache.~/pipx
+  POETRY_CACHE_DIR: ${{ github.workspace }}/.cache.~/pypoetry
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  PYTEST_ADDOPTS: ${{ github.event.inputs.pytest_addopts }}
+  PYTHONIOENCODING: "UTF-8"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Shared steps
+      - uses: actions/checkout@v1
+      - name: Install python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+      - name: Generate cache key CACHE
+        run:
+          echo "::set-env name=CACHE::${{ secrets.CACHE_DATE }} ${{ runner.os }}
+          $(python -VV | sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }}
+          ${{ hashFiles('poetry.lock') }}"
+      - uses: actions/cache@v2.1.0
+        with:
+          path: |
+            .cache.~
+            .venv
+            ~/.local/bin
+          key: venv ${{ env.CACHE }}
+      - run: pip install poetry
+      - name: Patch $PATH
+        run: echo "::set-env name=PATH::$HOME/.local/bin:$PATH"
+      - run: poetry install
+      # Run tests
+      - run: poetry run pytest
