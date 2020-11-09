@@ -88,3 +88,40 @@ def test_default_permissions():
     finally:
         pass
         _stop_and_delete_proxy()
+
+
+def test_container_permissions():
+    try:
+        _start_proxy(extra_args=["-e", "CONTAINERS=1"])
+        _check_permission("allowed", ["logs", CONTAINER_NAME])
+        _check_permission("allowed", ["inspect", CONTAINER_NAME])
+        _check_permission("forbidden", ["wait", CONTAINER_NAME])
+        _check_permission("forbidden", ["run", "--rm", "alpine"])
+        _check_permission("forbidden", ["rm", "-f", CONTAINER_NAME])
+        _check_permission("forbidden", ["restart", CONTAINER_NAME])
+    finally:
+        pass
+        _stop_and_delete_proxy()
+
+
+def test_post_permissions():
+    try:
+        _start_proxy(extra_args=["-e", "POST=1"])
+        _check_permission("forbidden", ["rm", "-f", CONTAINER_NAME])
+        _check_permission("forbidden", ["pull", "alpine"])
+        _check_permission("forbidden", ["run", "--rm", "alpine"])
+        _check_permission("forbidden", ["network", "create", "foobar"])
+    finally:
+        pass
+        _stop_and_delete_proxy()
+
+
+def test_network_post_permissions():
+    try:
+        _start_proxy(extra_args=["-e", "POST=1", "-e", "NETWORKS=1"])
+        _check_permission("allowed", ["network", "ls"])
+        _check_permission("allowed", ["network", "create", "foo"])
+        _check_permission("allowed", ["network", "rm", "foo"])
+    finally:
+        pass
+        _stop_and_delete_proxy()
