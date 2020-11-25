@@ -32,12 +32,12 @@ jobs:
       - name: Install python
         uses: actions/setup-python@v1
         with:
-          python-version: '3.9'
+          python-version: "3.9"
       - name: Generate cache key CACHE
         run:
-          echo "CACHE=${{ secrets.CACHE_DATE }} ${{ runner.os }}
-          $(python -VV | sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }}
-          ${{ hashFiles('poetry.lock') }}" >> $GITHUB_ENV
+          echo "CACHE=${{ secrets.CACHE_DATE }} ${{ runner.os }} $(python -VV |
+          sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }} ${{
+          hashFiles('poetry.lock') }}" >> $GITHUB_ENV
       - uses: actions/cache@v2
         with:
           path: |

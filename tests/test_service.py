@@ -1,10 +1,7 @@
-
-import pytest
 import logging
 
-from plumbum import ProcessExecutionError, local
+from plumbum import ProcessExecutionError
 from plumbum.cmd import docker
-from plumbum.machines.local import LocalCommand
 
 logger = logging.getLogger()
 
@@ -13,18 +10,19 @@ SOCKET_PROXY = "127.0.0.1:2375"
 
 
 def _start_proxy(
-    container_name=CONTAINER_NAME,
-    socket_proxy=SOCKET_PROXY,
-    extra_args=None
+    container_name=CONTAINER_NAME, socket_proxy=SOCKET_PROXY, extra_args=None
 ):
     logger.info(f"Starting {container_name} with args: {extra_args}...")
     docker(
         "run",
         "-d",
-        "--name", container_name,
+        "--name",
+        container_name,
         "--privileged",
-        "-v", "/var/run/docker.sock:/var/run/docker.sock",
-        "-p", f"{socket_proxy}:2375",
+        "-v",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "-p",
+        f"{socket_proxy}:2375",
         extra_args,
         "tecnativa/docker-socket-proxy",
     )
@@ -86,7 +84,6 @@ def test_default_permissions():
         _check_permission("forbidden", ["build", "."])
         _check_permission("forbidden", ["swarm", "init"])
     finally:
-        pass
         _stop_and_delete_proxy()
 
 
@@ -100,7 +97,6 @@ def test_container_permissions():
         _check_permission("forbidden", ["rm", "-f", CONTAINER_NAME])
         _check_permission("forbidden", ["restart", CONTAINER_NAME])
     finally:
-        pass
         _stop_and_delete_proxy()
 
 
@@ -112,7 +108,6 @@ def test_post_permissions():
         _check_permission("forbidden", ["run", "--rm", "alpine"])
         _check_permission("forbidden", ["network", "create", "foobar"])
     finally:
-        pass
         _stop_and_delete_proxy()
 
 
@@ -123,5 +118,4 @@ def test_network_post_permissions():
         _check_permission("allowed", ["network", "create", "foo"])
         _check_permission("allowed", ["network", "rm", "foo"])
     finally:
-        pass
         _stop_and_delete_proxy()
