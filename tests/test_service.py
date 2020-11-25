@@ -1,5 +1,6 @@
 import logging
 
+import pytest
 from plumbum import ProcessExecutionError
 from plumbum.cmd import docker
 
@@ -7,6 +8,12 @@ logger = logging.getLogger()
 
 CONTAINER_NAME = "docksockprox_test"
 SOCKET_PROXY = "127.0.0.1:2375"
+
+
+@pytest.fixture(autouse=True)
+def build_docker_image():
+    logger.info("Building docker image...")
+    docker("build", "-t", "docker-socket-proxy:local", ".")
 
 
 def _start_proxy(
@@ -24,7 +31,7 @@ def _start_proxy(
         "-p",
         f"{socket_proxy}:2375",
         extra_args,
-        "tecnativa/docker-socket-proxy",
+        "docker-socket-proxy:local",
     )
 
 
