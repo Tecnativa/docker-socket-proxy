@@ -1,3 +1,5 @@
 {
-  "python.pythonPath": ".venv/bin/python"
+  "python.pythonPath": ".venv/bin/python",
+  "python.testing.pytestEnabled": true,
+  "cSpell.words": ["pytest"]
 }
