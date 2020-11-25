@@ -4,8 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - devel
-      - stable
+      - master
   workflow_dispatch:
     inputs:
       pytest_addopts:
@@ -15,7 +14,6 @@ on:
         required: false
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   LANG: "en_US.utf-8"
   LC_ALL: "en_US.utf-8"
   PIP_CACHE_DIR: ${{ github.workspace }}/.cache.~/pip
@@ -34,13 +32,13 @@ jobs:
       - name: Install python
         uses: actions/setup-python@v1
         with:
-          python-version: '3.x'
+          python-version: '3.9'
       - name: Generate cache key CACHE
         run:
-          echo "::set-env name=CACHE::${{ secrets.CACHE_DATE }} ${{ runner.os }}
+          echo "CACHE=${{ secrets.CACHE_DATE }} ${{ runner.os }}
           $(python -VV | sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }}
-          ${{ hashFiles('poetry.lock') }}"
-      - uses: actions/cache@v2.1.0
+          ${{ hashFiles('poetry.lock') }}" >> $GITHUB_ENV
+      - uses: actions/cache@v2
         with:
           path: |
             .cache.~
@@ -49,7 +47,7 @@ jobs:
           key: venv ${{ env.CACHE }}
       - run: pip install poetry
       - name: Patch $PATH
-        run: echo "::set-env name=PATH::$HOME/.local/bin:$PATH"
+        run: echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
       - run: poetry install
       # Run tests
       - run: poetry run pytest

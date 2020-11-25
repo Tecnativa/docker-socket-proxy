@@ -6,10 +6,13 @@ authors = ["Tecnativa S.L"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-plumbum = "^1.6.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"
+pytest-xdist = "^2.1.0"
+plumbum = "^1.6.9"
+flake8 = "^3.8.4"
+pylint = "^2.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
