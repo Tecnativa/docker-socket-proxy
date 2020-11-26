@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.1.0a4
+_commit: v0.1.0a5
 _src_path: https://github.com/copier-org/autopretty.git
 ansible: false
 biggest_kbs: 0
