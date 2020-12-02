@@ -29,6 +29,12 @@ ENV ALLOW_RESTARTS=0 \
     VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
+# Install python/pip
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python -m ensurepip
+RUN python -m pip install --no-cache --upgrade pip setuptools
+
 # Metadata
 ARG VCS_REF
 ARG BUILD_DATE
