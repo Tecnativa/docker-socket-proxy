@@ -18,18 +18,6 @@ def docker_image():
     return IMAGE_NAME
 
 
-@pytest.fixture()
-def sleeping_container():
-    """Launch a test container that will last alive as long as the test."""
-    try:
-        container = docker(
-            "container", "run", "--rm", "--detach", "alpine", "sleep", "3600"
-        ).strip()
-        yield container
-    finally:
-        docker("container", "rm", "--force", container)
-
-
 @contextmanager
 def proxy(**env_vars):
     """A context manager that starts the proxy with the specified env.
@@ -39,7 +27,7 @@ def proxy(**env_vars):
     """
     container_id = None
     env_list = [f"--env={key}={value}" for key, value in env_vars.items()]
-    info(f"Starting {IMAGE_NAME} container with: {env_vars.join(' ')}")
+    info(f"Starting {IMAGE_NAME} container with: {env_list}")
     try:
         container_id = docker(
             "container",
@@ -50,7 +38,7 @@ def proxy(**env_vars):
             "--volume=/var/run/docker.sock:/var/run/docker.sock",
             *env_list,
             IMAGE_NAME,
-        )
+        ).strip()
         container_data = json.loads(
             docker("container", "inspect", container_id.strip())
         )
@@ -58,7 +46,7 @@ def proxy(**env_vars):
             "HostPort"
         ]
         with local.env(DOCKER_HOST=f"tcp://localhost:{socket_port}"):
-            yield
+            yield container_id
     finally:
         if container_id:
             info(f"Removing {container_id}...")
