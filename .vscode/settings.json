@@ -1,5 +1,14 @@
 {
+  "cSpell.words": ["pytest"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "python.formatting.provider": "black",
+  "python.linting.flake8Enabled": true,
   "python.pythonPath": ".venv/bin/python",
   "python.testing.pytestEnabled": true,
-  "cSpell.words": ["pytest"]
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnSave": true
+  }
 }
