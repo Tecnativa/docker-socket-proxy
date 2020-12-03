@@ -1,4 +1,5 @@
 import json
+import os
 from contextlib import contextmanager
 from logging import info
 from pathlib import Path
@@ -7,7 +8,8 @@ import pytest
 from plumbum import local
 from plumbum.cmd import docker
 
-IMAGE_NAME = "docker-socket-proxy:local"
+DOCKER_REPO = os.environ.get("DOCKER_REPO", "docker-socket-proxy")
+IMAGE_NAME = f"{DOCKER_REPO}:local"
 
 
 @pytest.fixture(autouse=True, scope="session")
