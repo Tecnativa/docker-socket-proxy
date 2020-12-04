@@ -153,21 +153,32 @@ poetry install
 
 ### Testing
 
-To run the tests locally, you first need to build the image locally:
+To run the tests locally, add `--prebuild` to autobuild the image before testing:
 
-```
-docker build -t docker-socket-proxy:local .
+```sh
+poetry run pytest --prebuild
 ```
 
-You can then run them with:
+By default, the image that the tests use (and optionally prebuild) is named
+`docker-socket-proxy:local`. If you prefer, you can build it separately before testing,
+and remove the `--prebuild` flag, to run the tests with that image you built:
 
-```
+```sh
+docker image build -t docker-socket-proxy:local .
 poetry run pytest
 ```
 
-_Note:_ You can use the docker tag you want, but that is the one that is picked by
-default in the tests. If you opt for a different one, set the environment variable
-`DOCKER_IMAGE_NAME` to the value you prefer before running the tests.
+If you want to use a different image, export the `DOCKER_IMAGE_NAME` env variable with
+the name you want:
+
+```sh
+# To build it automatically
+env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest --prebuild
+
+# To prebuild it separately
+docker image build -t my_custom_image .
+env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest
+```
 
 ## Logging
 

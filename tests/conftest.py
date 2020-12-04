@@ -2,11 +2,26 @@ import json
 import os
 from contextlib import contextmanager
 from logging import info
+from pathlib import Path
 
+import pytest
 from plumbum import local
 from plumbum.cmd import docker
 
 DOCKER_IMAGE_NAME = os.environ.get("DOCKER_IMAGE_NAME", "docker-socket-proxy:local")
+
+
+def pytest_addoption(parser):
+    """Allow prebuilding image for local testing."""
+    parser.addoption("--prebuild", action="store_const", const=True)
+
+
+@pytest.fixture(autouse=True, scope="session")
+def prebuild_docker_image(request):
+    """Build local docker image once before starting test suite."""
+    if request.config.getoption("--prebuild"):
+        info(f"Building {DOCKER_IMAGE_NAME}...")
+        docker("build", "-t", DOCKER_IMAGE_NAME, Path(__file__).parent.parent)
 
 
 @contextmanager
