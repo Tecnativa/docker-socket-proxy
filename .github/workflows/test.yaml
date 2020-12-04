@@ -67,6 +67,8 @@ jobs:
       - run: poetry install
       # Run tests
       - run: poetry run pytest
+        env:
+          DOCKER_IMAGE_NAME: ${{ env.DOCKER_REPO }}:local
       # Build and push
       - name: Login to DockerHub
         if:

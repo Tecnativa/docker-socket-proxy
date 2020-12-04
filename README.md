@@ -140,6 +140,35 @@ extremely critical but can expose some information that your service does not ne
 -   `TASKS`
 -   `VOLUMES`
 
+## Development
+
+All the dependencies you need to develop this project (apart from Docker itself) are
+managed with [poetry](https://python-poetry.org/).
+
+To set up your development environment, run:
+
+```
+poetry install
+```
+
+### Testing
+
+To run the tests locally, you first need to build the image locally:
+
+```
+docker build -t docker-socket-proxy:local .
+```
+
+You can then run them with:
+
+```
+poetry run pytest
+```
+
+_Note:_ You can use the docker tag you want, but that is the one that is picked by
+default in the tests. If you opt for a different one, set the environment variable
+`DOCKER_IMAGE_NAME` to the value you prefer before running the tests.
+
 ## Logging
 
 You can set the logging level or severity level of the messages to be logged with the

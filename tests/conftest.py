@@ -6,8 +6,7 @@ from logging import info
 from plumbum import local
 from plumbum.cmd import docker
 
-DOCKER_REPO = os.environ.get("DOCKER_REPO", "docker-socket-proxy")
-IMAGE_NAME = f"{DOCKER_REPO}:local"
+DOCKER_IMAGE_NAME = os.environ.get("DOCKER_IMAGE_NAME", "docker-socket-proxy:local")
 
 
 @contextmanager
@@ -19,7 +18,7 @@ def proxy(**env_vars):
     """
     container_id = None
     env_list = [f"--env={key}={value}" for key, value in env_vars.items()]
-    info(f"Starting {IMAGE_NAME} container with: {env_list}")
+    info(f"Starting {DOCKER_IMAGE_NAME} container with: {env_list}")
     try:
         container_id = docker(
             "container",
@@ -29,7 +28,7 @@ def proxy(**env_vars):
             "--publish=2375",
             "--volume=/var/run/docker.sock:/var/run/docker.sock",
             *env_list,
-            IMAGE_NAME,
+            DOCKER_IMAGE_NAME,
         ).strip()
         container_data = json.loads(
             docker("container", "inspect", container_id.strip())
