@@ -2,22 +2,12 @@ import json
 import os
 from contextlib import contextmanager
 from logging import info
-from pathlib import Path
 
-import pytest
 from plumbum import local
 from plumbum.cmd import docker
 
 DOCKER_REPO = os.environ.get("DOCKER_REPO", "docker-socket-proxy")
 IMAGE_NAME = f"{DOCKER_REPO}:local"
-
-
-@pytest.fixture(autouse=True, scope="session")
-def docker_image():
-    """Build local docker image once before starting test suite."""
-    info(f"Building {IMAGE_NAME}...")
-    docker("build", "-t", IMAGE_NAME, Path(__file__).parent.parent)
-    return IMAGE_NAME
 
 
 @contextmanager
