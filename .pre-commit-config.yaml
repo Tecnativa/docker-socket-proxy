@@ -10,34 +10,6 @@ repos:
         entry: found forbidden files; remove them
         language: fail
         files: "\\.rej$"
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
-    hooks:
-      - id: check-case-conflict
-      - id: check-executables-have-shebangs
-      - id: check-json
-      - id: check-merge-conflict
-      - id: check-symlinks
-      - id: check-toml
-      - id: check-xml
-      - id: check-yaml
-      - id: detect-private-key
-      - id: end-of-file-fixer
-      - id: mixed-line-ending
-        args:
-          - --fix=lf
-      - id: no-commit-to-branch
-        args:
-          - --branch=master
-      - id: trailing-whitespace
-      - id: check-ast
-      - id: check-builtin-literals
-      - id: check-docstring-first
-      - id: debug-statements
-      - id: fix-encoding-pragma
-        args:
-          - --remove
-      - id: requirements-txt-fixer
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.1.2
     hooks:
@@ -87,3 +59,28 @@ repos:
           # ignore unused imports in __init__.py
           - --extend-ignore=F401
         files: /__init__\.py$
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-docstring-first
+      - id: debug-statements
+      - id: fix-encoding-pragma
+        args:
+          - --remove
+      - id: requirements-txt-fixer
