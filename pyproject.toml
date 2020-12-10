@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "docker-socket-proxy"
+version = "0.0.0"
+description = ""
+authors = ["Tecnativa"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^20.8b1", allow-prereleases = true}
+flake8 = "^3.8.4"
+plumbum = "^1.6.9"
+pytest = "^6.1.2"
+pytest-xdist = "^2.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
