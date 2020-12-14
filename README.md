@@ -1,9 +1,7 @@
 # Docker Socket Proxy
 
-[![](https://images.microbadger.com/badges/version/tecnativa/docker-socket-proxy:latest.svg)](https://microbadger.com/images/tecnativa/docker-socket-proxy:latest "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/tecnativa/docker-socket-proxy:latest.svg)](https://microbadger.com/images/tecnativa/docker-socket-proxy:latest "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/commit/tecnativa/docker-socket-proxy:latest.svg)](https://microbadger.com/images/tecnativa/docker-socket-proxy:latest "Get your own commit badge on microbadger.com")
-[![](https://images.microbadger.com/badges/license/tecnativa/docker-socket-proxy.svg)](https://microbadger.com/images/tecnativa/docker-socket-proxy "Get your own license badge on microbadger.com")
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-docker.io%2Ftecnativa%2Fdocker--socket--proxy-%23099cec)](https://hub.docker.com/r/tecnativa/docker-socket-proxy)
+[![GitHub Container Registry](https://img.shields.io/badge/GitHub%20Container%20Registry-ghcr.io%2Ftecnativa%2Fdocker--socket--proxy-%2324292e)](https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy)
 
 ## What?
 
@@ -194,10 +192,22 @@ info, notice, warning, err, crit, alert and emerg.
 -   [1.30](https://docs.docker.com/engine/api/v1.30/)
 -   [1.37](https://docs.docker.com/engine/api/v1.37/)
 
+## Image tags
+
+Right now, the only supported tag in our container images is `:latest`.
+
+Any other tag you find in our [Docker Hub image][dh-img] is deprecated.
+
+We recommend using [GitHub Container Registry][ghcr-img] instead.
+
 ## Feedback
 
-Please send any feedback (issues, questions) to the [issue tracker][].
+Please send any issues to the [issue tracker][]. For other kind of feedback, you can
+use [our forum][].
 
 [alpine]: https://alpinelinux.org/
+[dh-img]: https://hub.docker.com/r/tecnativa/docker-socket-proxy
+[ghcr-img]: https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy
 [haproxy]: http://www.haproxy.org/
 [issue tracker]: https://github.com/Tecnativa/docker-socket-proxy/issues
+[our forum]: https://github.com/Tecnativa/docker-socket-proxy/discussions
