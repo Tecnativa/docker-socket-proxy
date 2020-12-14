@@ -202,12 +202,13 @@ We recommend using [GitHub Container Registry][ghcr-img] instead.
 
 ## Feedback
 
-Please send any issues to the [issue tracker][]. For other kind of feedback, you can
-use [our forum][].
+Please send any issues to the [issue tracker][]. For other kind of feedback, you can use
+[our forum][].
 
 [alpine]: https://alpinelinux.org/
 [dh-img]: https://hub.docker.com/r/tecnativa/docker-socket-proxy
-[ghcr-img]: https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy
+[ghcr-img]:
+    https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy
 [haproxy]: http://www.haproxy.org/
 [issue tracker]: https://github.com/Tecnativa/docker-socket-proxy/issues
 [our forum]: https://github.com/Tecnativa/docker-socket-proxy/discussions
