@@ -1,5 +1,4 @@
-ARG REPO=library
-FROM ${REPO}/haproxy:1.9-alpine
+FROM haproxy:1.9-alpine
 
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
@@ -29,17 +28,11 @@ ENV ALLOW_RESTARTS=0 \
     VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
-# Install python/pip
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf $(which python3) /usr/local/bin/python
-RUN python -m ensurepip && python -m pip install --no-cache --upgrade pip setuptools
-
 # Metadata
 ARG VCS_REF
 ARG BUILD_DATE
-LABEL org.label-schema.schema-version="1.0" \
-      org.label-schema.vendor=Tecnativa \
-      org.label-schema.license=Apache-2.0 \
-      org.label-schema.build-date="$BUILD_DATE" \
-      org.label-schema.vcs-ref="$VCS_REF" \
-      org.label-schema.vcs-url="https://github.com/Tecnativa/docker-socket-proxy"
+LABEL org.opencontainers.image.vendor=Tecnativa \
+      org.opencontainers.image.licenses=Apache-2.0 \
+      org.opencontainers.image.created="$BUILD_DATE" \
+      org.opencontainers.image.revision="$VCS_REF" \
+      org.opencontainers.image.source="https://github.com/Tecnativa/docker-socket-proxy"
