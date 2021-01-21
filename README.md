@@ -1,3 +1,7 @@
+[![Last image-template](https://img.shields.io/badge/last%20template%20update-v0.1.2-informational)](https://github.com/Tecnativa/image-template/tree/v0.1.2)
+[![GitHub Container Registry](https://img.shields.io/badge/GitHub%20Container%20Registry-latest-%2324292e)](https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy)
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-latest-%23099cec)](https://hub.docker.com/r/tecnativa/docker-socket-proxy)
+
 # Docker Socket Proxy
 
 [![Docker Hub](https://img.shields.io/badge/Docker%20Hub-docker.io%2Ftecnativa%2Fdocker--socket--proxy-%23099cec)](https://hub.docker.com/r/tecnativa/docker-socket-proxy)
