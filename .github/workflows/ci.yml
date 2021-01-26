@@ -5,6 +5,8 @@ name: Build, Test & Deploy
   push:
     branches:
       - master
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       pytest_addopts:
