@@ -4,9 +4,6 @@
 
 # Docker Socket Proxy
 
-[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-docker.io%2Ftecnativa%2Fdocker--socket--proxy-%23099cec)](https://hub.docker.com/r/tecnativa/docker-socket-proxy)
-[![GitHub Container Registry](https://img.shields.io/badge/GitHub%20Container%20Registry-ghcr.io%2Ftecnativa%2Fdocker--socket--proxy-%2324292e)](https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy)
-
 ## What?
 
 This is a security-enhanced proxy for the Docker Socket.
