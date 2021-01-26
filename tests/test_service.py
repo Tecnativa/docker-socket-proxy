@@ -1,7 +1,6 @@
 import logging
 
 import pytest
-from conftest import proxy
 from plumbum import ProcessExecutionError
 from plumbum.cmd import docker
 
@@ -16,8 +15,8 @@ def _check_permissions(allowed_calls, forbidden_calls):
             docker(*args)
 
 
-def test_default_permissions():
-    with proxy() as test_container:
+def test_default_permissions(proxy_factory):
+    with proxy_factory() as test_container:
         allowed_calls = (("version",),)
         forbidden_calls = (
             ("pull", "alpine"),
@@ -40,8 +39,8 @@ def test_default_permissions():
         _check_permissions(allowed_calls, forbidden_calls)
 
 
-def test_container_permissions():
-    with proxy(CONTAINERS=1) as test_container:
+def test_container_permissions(proxy_factory):
+    with proxy_factory(CONTAINERS=1) as test_container:
         allowed_calls = [
             ("logs", test_container),
             ("inspect", test_container),
@@ -55,8 +54,8 @@ def test_container_permissions():
         _check_permissions(allowed_calls, forbidden_calls)
 
 
-def test_post_permissions():
-    with proxy(POST=1) as test_container:
+def test_post_permissions(proxy_factory):
+    with proxy_factory(POST=1) as test_container:
         allowed_calls = []
         forbidden_calls = [
             ("rm", "-f", test_container),
@@ -67,8 +66,8 @@ def test_post_permissions():
         _check_permissions(allowed_calls, forbidden_calls)
 
 
-def test_network_post_permissions():
-    with proxy(POST=1, NETWORKS=1):
+def test_network_post_permissions(proxy_factory):
+    with proxy_factory(POST=1, NETWORKS=1):
         allowed_calls = [
             ("network", "ls"),
             ("network", "create", "foo"),
