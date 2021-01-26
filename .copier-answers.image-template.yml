@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.1.2
+_commit: v0.1.3
 _src_path: https://github.com/Tecnativa/image-template.git
 dockerhub_image: tecnativa/docker-socket-proxy
 image_platforms:
