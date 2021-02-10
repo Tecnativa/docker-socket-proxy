@@ -27,4 +27,4 @@ ENV ALLOW_RESTARTS=0 \
     VERSION=1 \
     VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
-HEALTHCHECK --interval=1m --timeout=10s CMD nc -z 127.0.0.1 2375 || exit 1
+HEALTHCHECK --interval=1m --timeout=10s CMD nc -z 127.0.0.1 2375
