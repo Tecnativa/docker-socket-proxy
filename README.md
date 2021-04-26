@@ -50,7 +50,7 @@ never happen.
 
 2.  Connect your local docker client to that socket:
 
-        $ export DOCKER_HOST=tcp://localhost
+        $ export DOCKER_HOST=tcp://localhost:2375
 
 3.  You can see the docker version:
 
