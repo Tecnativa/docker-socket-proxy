@@ -1,0 +1,38 @@
+---
+image: "{DOCKER_REPO}:{TAG_ROOT}"
+manifests:
+  - image: "{DOCKER_REPO}:{TAG_ROOT}"
+    platform:
+      architecture: amd64
+      os: linux
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-amd64"
+    platform:
+      architecture: amd64
+      os: linux
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-arm32v6"
+    platform:
+      architecture: arm
+      os: linux
+      variant: v6
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-arm32v7"
+    platform:
+      architecture: arm
+      os: linux
+      variant: v7
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-arm64v8"
+    platform:
+      architecture: arm64
+      os: linux
+      variant: v8
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-i386"
+    platform:
+      architecture: i386
+      os: linux
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-s390x"
+    platform:
+      architecture: s390x
+      os: linux
+  - image: "{DOCKER_REPO}:{TAG_ROOT}-ppc64le"
+    platform:
+      architecture: ppc64le
+      os: linux
