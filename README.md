@@ -195,7 +195,13 @@ info, notice, warning, err, crit, alert and emerg.
 
 ## Image tags
 
-Right now, the only supported tag in our container images is `:latest`.
+Right now, the only supported tags in our container images are the ones following this
+rules:
+
+1. Each individual git released version will result in an image being tagged with the
+   correspondent `:{{version}}`
+1. `:latest` will refer to the latest _released_ version in git.
+1. `:edge` will be the version that is in the repo's master branch
 
 Any other tag you find in our [Docker Hub image][dh-img] is deprecated.
 
