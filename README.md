@@ -32,7 +32,7 @@ never happen.
     Unix socket (which is not TLS protected even if you configured your host for TLS
     protection). This is by design because you are supposed to restrict access to it
     through Docker's built-in firewall.
--   [Read the docs](#suppported-api-versions) for the API version you are using, and
+-   [Read the docs](#supported-api-versions) for the API version you are using, and
     **know what you are doing**.
 
 ## Usage
