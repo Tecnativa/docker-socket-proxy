@@ -34,6 +34,7 @@ def test_default_permissions(proxy_factory):
             ("info",),
             ("system", "info"),
             ("build", "."),
+            ("buildx build", "."),
             ("swarm", "init"),
         )
         _check_permissions(allowed_calls, forbidden_calls)

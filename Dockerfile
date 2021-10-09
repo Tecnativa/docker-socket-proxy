@@ -10,6 +10,7 @@ ENV ALLOW_RESTARTS=0 \
     DISTRIBUTION=0 \
     EVENTS=1 \
     EXEC=0 \
+    GRPC=0 \
     IMAGES=0 \
     INFO=0 \
     LOG_LEVEL=info \

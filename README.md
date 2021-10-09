@@ -127,6 +127,7 @@ extremely critical but can expose some information that your service does not ne
 -   `CONTAINERS`
 -   `DISTRIBUTION`
 -   `EXEC`
+-   `GRPC`
 -   `IMAGES`
 -   `INFO`
 -   `NETWORKS`
