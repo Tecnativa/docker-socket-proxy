@@ -22,6 +22,7 @@ ENV ALLOW_RESTARTS=0 \
     SECRETS=0 \
     SERVICES=0 \
     SESSION=0 \
+    SOCKET_PATH=/var/run/docker.sock \
     SWARM=0 \
     SYSTEM=0 \
     TASKS=0 \

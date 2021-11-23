@@ -140,6 +140,13 @@ extremely critical but can expose some information that your service does not ne
 -   `TASKS`
 -   `VOLUMES`
 
+## Use a different Docker socket location
+
+If your OS stores its Docker socket in a different location, you can specify this via
+the `SOCKET_PATH` environment variable.
+
+For example, [balenaOS](https://www.balena.io/os/) exposes its socket at `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH` environment variable to `/var/run/balena-engine.sock`.
+
 ## Development
 
 All the dependencies you need to develop this project (apart from Docker itself) are
