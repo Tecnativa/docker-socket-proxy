@@ -142,10 +142,13 @@ extremely critical but can expose some information that your service does not ne
 
 ## Use a different Docker socket location
 
-If your OS stores its Docker socket in a different location, you can specify this via
-the `SOCKET_PATH` environment variable.
+If your OS stores its Docker socket in a different location and you are unable to bind
+mount it in your container specification, you can specify this via the `SOCKET_PATH`
+environment variable.
 
-For example, [balenaOS](https://www.balena.io/os/) exposes its socket at `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH` environment variable to `/var/run/balena-engine.sock`.
+For example, [balenaOS](https://www.balena.io/os/) exposes its socket at
+`/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH`
+environment variable to `/var/run/balena-engine.sock`.
 
 ## Development
 
