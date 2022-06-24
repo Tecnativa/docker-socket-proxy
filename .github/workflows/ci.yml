@@ -7,6 +7,8 @@ name: Build, Test & Deploy
       - master
     tags:
       - "v*"
+  schedule:
+    - cron: "0 0 * * 0" # Midnight on Sunday
   workflow_dispatch:
     inputs:
       pytest_addopts:
