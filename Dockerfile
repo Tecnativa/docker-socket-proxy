@@ -1,5 +1,7 @@
 FROM haproxy:lts-alpine
 
+USER root
+
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
     AUTH=0 \
