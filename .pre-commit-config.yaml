@@ -44,7 +44,7 @@ repos:
       - id: isort
         args:
           - --settings=.
-  - repo: https://gitlab.com/pycqa/flake8
+  - repo: https://github.com/pycqa/flake8
     rev: 3.9.2
     hooks:
       - &flake8
