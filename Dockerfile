@@ -1,6 +1,13 @@
-FROM haproxy:2.2-alpine
+FROM haproxy:2.7-alpine
+USER root
 
-EXPOSE 2375
+COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY start.sh /usr/local/bin/start.sh
+
+RUN apk upgrade --no-cache && \
+    apk add --no-cache ca-certificates wget tzdata openssl && \
+    chmod +x /usr/local/bin/start.sh
+
 ENV ALLOW_RESTARTS=0 \
     AUTH=0 \
     BUILD=0 \
@@ -28,4 +35,5 @@ ENV ALLOW_RESTARTS=0 \
     TASKS=0 \
     VERSION=1 \
     VOLUMES=0
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+    
+ENTRYPOINT start.sh
