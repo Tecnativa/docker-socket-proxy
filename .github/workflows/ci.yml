@@ -29,7 +29,7 @@ env:
 
 jobs:
   build-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python:
@@ -61,7 +61,7 @@ jobs:
       # Run tests
       - run: poetry run pytest --prebuild
   build-push:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     services:
       registry:
         image: registry:2
@@ -73,17 +73,17 @@ jobs:
       PUSH: ${{ toJSON(github.event_name != 'pull_request') }}
     steps:
       # Set up Docker Environment
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v2
         with:
           path: |
             /tmp/.buildx-cache
           key: buildx|${{ secrets.CACHE_DATE }}|${{ runner.os }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         with:
           driver-opts: network=host
           install: true
@@ -147,7 +147,7 @@ jobs:
             {{major}}.{{minor}}
       - name: Build and push to public registry(s)
         if: ${{ fromJSON(env.PUSH) }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           file: ./Dockerfile
