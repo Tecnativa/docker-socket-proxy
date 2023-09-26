@@ -193,7 +193,7 @@ env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest
 ## Logging
 
 You can set the logging level or severity level of the messages to be logged with the
-environment variable `LOG_LEVEL`. Defaul value is info. Possible values are: debug,
+environment variable `LOG_LEVEL`. Default value is info. Possible values are: debug,
 info, notice, warning, err, crit, alert and emerg.
 
 ## Supported API versions
