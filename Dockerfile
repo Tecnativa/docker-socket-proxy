@@ -27,5 +27,6 @@ ENV ALLOW_RESTARTS=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0
+    VOLUMES=0 \
+    BIND=":2375"
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
