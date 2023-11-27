@@ -125,6 +125,9 @@ extremely critical but can expose some information that your service does not ne
 -   `COMMIT`
 -   `CONFIGS`
 -   `CONTAINERS`
+-   `ALLOW_START` (containers/`id`/`start`)
+-   `ALLOW_STOP` (containers/`id`/`stop`)
+-   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
 -   `DISTRIBUTION`
 -   `EXEC`
 -   `GRPC`
