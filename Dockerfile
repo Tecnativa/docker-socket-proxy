@@ -31,3 +31,5 @@ ENV ALLOW_RESTARTS=0 \
     VERSION=1 \
     VOLUMES=0
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+
+RUN apk --no-cache add curl

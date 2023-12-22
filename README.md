@@ -153,6 +153,43 @@ For example, [balenaOS](https://www.balena.io/os/) exposes its socket at
 `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH`
 environment variable to `/var/run/balena-engine.sock`.
 
+## Use healthchecks to assert readiness
+
+In some cases, you may wish to start other containers or services only once this
+container is ready. The image contains `curl`, so you can build useful healthchecks.
+For example, with `docker` CLI, assuming `PING=1` (default):
+
+```sh
+docker run -d -v /var/run/docker.sock:/var/run/docker.sock --health-cmd "curl -s http://localhost:2375/_ping | grep 'OK'" --health-interval 5s --health-retries 5 --health-timeout 5s ghcr.io/tecnativa/docker-socket-proxy:edge
+```
+
+Or with `docker compose`, you can control startup order automatically using `depends_on`:
+
+```sh
+services:
+  dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:edge
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s http://localhost:2375/_ping | grep 'OK'
+      interval: 5s
+      retries: 5
+      timeout: 5s
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  traefik:
+    depends_on:
+      dockerproxy:
+        condition: service_healthy
+    image: docker.io/traefik:v2.9.9
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+```
+
 ## Development
 
 All the dependencies you need to develop this project (apart from Docker itself) are
