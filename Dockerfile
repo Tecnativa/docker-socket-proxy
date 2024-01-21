@@ -2,6 +2,8 @@ FROM haproxy:2.2-alpine
 
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
+    ALLOW_STOP=0 \
+    ALLOW_START=0 \
     AUTH=0 \
     BUILD=0 \
     COMMIT=0 \
