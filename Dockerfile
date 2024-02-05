@@ -1,4 +1,6 @@
-FROM haproxy:2.2-alpine
+FROM haproxy:lts-alpine
+
+USER root
 
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
@@ -30,4 +32,10 @@ ENV ALLOW_RESTARTS=0 \
     TASKS=0 \
     VERSION=1 \
     VOLUMES=0
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+
+CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
