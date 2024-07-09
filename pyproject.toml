@@ -8,7 +8,7 @@ authors = ["Tecnativa"]
 python = "^3.8"
 
 [tool.poetry.dev-dependencies]
-black = {version = "^20.8b1", allow-prereleases = true}
+black = {version = "^24.3", allow-prereleases = true}
 flake8 = "^3.8.4"
 plumbum = "^1.6.9"
 pytest = "^6.1.2"
