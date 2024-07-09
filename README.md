@@ -153,6 +153,17 @@ For example, [balenaOS](https://www.balena.io/os/) exposes its socket at
 `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH`
 environment variable to `/var/run/balena-engine.sock`.
 
+## Disable IPv6
+
+The default configuration should work with IPv4 and IPv6 out of the box.
+Certain platforms have problems with this, causing the proxy to fail with an error message like the following:
+
+```
+Starting frontend dockerfrontend: cannot create listening socket [:::2375]
+```
+
+If you run into such problems, disable IPv6 by setting the environment variable `DISABLE_IPV6` to any affirmative value (`1`, `true`, or `yes`).
+
 ## Development
 
 All the dependencies you need to develop this project (apart from Docker itself) are
