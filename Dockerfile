@@ -1,4 +1,4 @@
-FROM haproxy:3.0-alpine
+FROM haproxy:2.3-alpine
 
 USER root
 EXPOSE 2375
