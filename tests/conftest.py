@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -68,6 +69,7 @@ def proxy_factory(image):
                 *env_list,
                 image,
             ).strip()
+            time.sleep(0.5)
             container_data = json.loads(
                 docker("container", "inspect", container_id.strip())
             )
