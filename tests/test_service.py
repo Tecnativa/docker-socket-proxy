@@ -76,3 +76,12 @@ def test_network_post_permissions(proxy_factory):
         ]
         forbidden_calls = []
         _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_exec_permissions(proxy_factory):
+    with proxy_factory(CONTAINERS=1, EXEC=1, POST=1) as container_id:
+        allowed_calls = [
+            ("exec", container_id, "ls"),
+        ]
+        forbidden_calls = []
+        _check_permissions(allowed_calls, forbidden_calls)
