@@ -153,6 +153,32 @@ For example, [balenaOS](https://www.balena.io/os/) exposes its socket at
 `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH`
 environment variable to `/var/run/balena-engine.sock`.
 
+## Exposing as a Unix socket
+
+If you'd like to expose the proxy as a Unix socket, you can do so by setting the
+`BIND_CONFIG` environment variable.
+
+As an example, the following command will start the proxy and bind to the socket at
+`/sockets/docker.sock`. Since this is a volume, this could then be shared with another
+container.
+
+```
+$ docker container run \
+    -d --privileged \
+    --name dockerproxy \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v docker-socket:/sockets \
+    -e BIND_CONFIG=/sockets/docker.sock \
+    tecnativa/docker-socket-proxy
+```
+
+Once running, the socket can be shared with another container by using the
+`docker-socket` volume:
+
+```
+$ docker container run -v docker-socket:/var/run ...
+```
+
 ## Development
 
 All the dependencies you need to develop this project (apart from Docker itself) are

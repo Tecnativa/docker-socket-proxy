@@ -1,21 +1,23 @@
 #!/bin/sh
 set -e
 
-# Normalize the input for DISABLE_IPV6 to lowercase
-DISABLE_IPV6_LOWER=$(echo "$DISABLE_IPV6" | tr '[:upper:]' '[:lower:]')
+if [ "${BIND_CONFIG}" = "" ]; then
+    # Normalize the input for DISABLE_IPV6 to lowercase
+    DISABLE_IPV6_LOWER=$(echo "$DISABLE_IPV6" | tr '[:upper:]' '[:lower:]')
 
-# Check for different representations of 'true' and set BIND_CONFIG
-case "$DISABLE_IPV6_LOWER" in
-    1|true|yes)
-        BIND_CONFIG=":2375"
-        ;;
-    *)
-        BIND_CONFIG="[::]:2375 v4v6"
-        ;;
-esac
+    # Check for different representations of 'true' and set BIND_CONFIG
+    case "$DISABLE_IPV6_LOWER" in
+        1|true|yes)
+            BIND_CONFIG=":2375"
+            ;;
+        *)
+            BIND_CONFIG="[::]:2375 v4v6"
+            ;;
+    esac
+fi
 
 # Process the HAProxy configuration template using sed
-sed "s/\${BIND_CONFIG}/$BIND_CONFIG/g" /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
+sed "s#/\${BIND_CONFIG}#$BIND_CONFIG#g" /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
