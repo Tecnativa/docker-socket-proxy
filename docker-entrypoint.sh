@@ -6,28 +6,37 @@ DISABLE_IPV6_LOWER=$(echo "$DISABLE_IPV6" | tr '[:upper:]' '[:lower:]')
 
 # Check for different representations of 'true' and set BIND_CONFIG
 case "$DISABLE_IPV6_LOWER" in
-    1|true|yes)
-        BIND_CONFIG=":2375"
-        ;;
-    *)
-        BIND_CONFIG="[::]:2375 v4v6"
-        ;;
+1 | true | yes)
+    BIND_CONFIG=":2375"
+    ;;
+*)
+    BIND_CONFIG="[::]:2375 v4v6"
+    ;;
 esac
 
-# Process the HAProxy configuration template using sed
-sed "s/\${BIND_CONFIG}/$BIND_CONFIG/g" /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
+# Create required directories
+mkdir -p /var/lib/haproxy
+
+# Process the HAProxy configuration templates
+sed -i "s/\${BIND_CONFIG}/$BIND_CONFIG/g" /usr/local/etc/haproxy/haproxy.cfg
+sed -i "s|\${SOCKET_PATH}|$SOCKET_PATH|g" /usr/local/etc/haproxy/haproxy.cfg
+
+# Test socket connectivity
+if ! timeout 5 socat -t 1 UNIX-CONNECT:$SOCKET_PATH PIPE 2>/dev/null; then
+    echo "Warning: Could not connect to Docker socket!"
+fi
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
-	set -- haproxy "$@"
+    set -- haproxy "$@"
 fi
 
 if [ "$1" = 'haproxy' ]; then
-	shift # "haproxy"
-	# if the user wants "haproxy", let's add a couple useful flags
-	#   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
-	#   -db -- disables background mode
-	set -- haproxy -W -db "$@"
+    shift # "haproxy"
+    # if the user wants "haproxy", let's add a couple useful flags
+    #   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
+    #   -db -- disables background mode
+    set -- haproxy -W -db "$@"
 fi
 
 exec "$@"

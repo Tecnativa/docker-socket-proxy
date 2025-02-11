@@ -1,6 +1,7 @@
-FROM haproxy:2.2-alpine
+FROM haproxy:3.1-alpine
 
 EXPOSE 2375
+
 ENV ALLOW_RESTARTS=0 \
     ALLOW_STOP=0 \
     ALLOW_START=0 \
@@ -31,5 +32,11 @@ ENV ALLOW_RESTARTS=0 \
     TASKS=0 \
     VERSION=1 \
     VOLUMES=0
+
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg.template
+COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+
+# We need to be root to access the docker socket
+USER root
+
+CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
