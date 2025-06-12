@@ -30,6 +30,13 @@ ENV ALLOW_RESTARTS=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0
+    VOLUMES=0 \
+    TIMEOUT_HTTP_REQUEST=10s \
+    TIMEOUT_QUEUE=1m \
+    TIMEOUT_CONNECT=10s \
+    TIMEOUT_CLIENT=50s \
+    TIMEOUT_SERVER=50s \
+    TIMEOUT_TUNNEL=3600s
+
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg.template

@@ -15,19 +15,26 @@ case "$DISABLE_IPV6_LOWER" in
 esac
 
 # Process the HAProxy configuration template using sed
-sed "s/\${BIND_CONFIG}/$BIND_CONFIG/g" /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
+sed -e "s|\${BIND_CONFIG}|$BIND_CONFIG|g" \
+    -e "s|\${TIMEOUT_HTTP_REQUEST}|$TIMEOUT_HTTP_REQUEST|g" \
+    -e "s|\${TIMEOUT_QUEUE}|$TIMEOUT_QUEUE|g" \
+    -e "s|\${TIMEOUT_CONNECT}|$TIMEOUT_CONNECT|g" \
+    -e "s|\${TIMEOUT_CLIENT}|$TIMEOUT_CLIENT|g" \
+    -e "s|\${TIMEOUT_SERVER}|$TIMEOUT_SERVER|g" \
+    -e "s|\${TIMEOUT_TUNNEL}|$TIMEOUT_TUNNEL|g" \
+    /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
-	set -- haproxy "$@"
+    set -- haproxy "$@"
 fi
 
 if [ "$1" = 'haproxy' ]; then
-	shift # "haproxy"
-	# if the user wants "haproxy", let's add a couple useful flags
-	#   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
-	#   -db -- disables background mode
-	set -- haproxy -W -db "$@"
+    shift # "haproxy"
+    # if the user wants "haproxy", let's add a couple useful flags
+    #   -W  -- "master-worker mode" (similar to the old "haproxy-systemd-wrapper"; allows for reload via "SIGUSR2")
+    #   -db -- disables background mode
+    set -- haproxy -W -db "$@"
 fi
 
 exec "$@"

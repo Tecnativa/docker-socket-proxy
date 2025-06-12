@@ -143,6 +143,30 @@ extremely critical but can expose some information that your service does not ne
 -   `TASKS`
 -   `VOLUMES`
 
+##### Timeout Configuration
+
+The Docker Socket Proxy allows configuration of various timeouts using environment variables. These timeouts control how long HAProxy waits for certain events before taking action. You can set these environment variables when running the Docker container to override the default values. Click each entry in the list to read the appropriate HAProxy Documentation.
+
+- [`TIMEOUT_HTTP_REQUEST`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20http-request): Maximum time to wait for a complete HTTP request. Default is `10s`.
+- [`TIMEOUT_QUEUE`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20queue): Maximum time a request can remain in the queue. Default is `1m`.
+- [`TIMEOUT_CONNECT`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20connect): Maximum time to wait for a connection attempt to a backend server. Default is `10s`.
+- [`TIMEOUT_CLIENT`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20client): Maximum inactivity time on the client side. Default is `50s`.
+- [`TIMEOUT_SERVER`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20server): Maximum inactivity time on the server side. Default is `50s`.
+- [`TIMEOUT_TUNNEL`](https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#timeout%20tunnel): Maximum inactivity time for a tunnel connection. Default is `3600s` (1 hour).
+
+To set these timeouts, you can pass them as environment variables when starting the Docker container. For example:
+
+```
+docker container run \
+    -d --privileged \
+    --name dockerproxy \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -p 127.0.0.1:2375:2375 \
+    -e TIMEOUT_HTTP_REQUEST=15s \
+    -e TIMEOUT_QUEUE=2m \
+    tecnativa/docker-socket-proxy
+```
+
 ## Use a different Docker socket location
 
 If your OS stores its Docker socket in a different location and you are unable to bind
