@@ -21,7 +21,6 @@ sed -e "s|\${BIND_CONFIG}|$BIND_CONFIG|g" \
     -e "s|\${TIMEOUT_CONNECT}|$TIMEOUT_CONNECT|g" \
     -e "s|\${TIMEOUT_CLIENT}|$TIMEOUT_CLIENT|g" \
     -e "s|\${TIMEOUT_SERVER}|$TIMEOUT_SERVER|g" \
-    -e "s|\${TIMEOUT_TUNNEL}|$TIMEOUT_TUNNEL|g" \
     /usr/local/etc/haproxy/haproxy.cfg.template > /usr/local/etc/haproxy/haproxy.cfg
 
 # first arg is `-f` or `--some-option`
