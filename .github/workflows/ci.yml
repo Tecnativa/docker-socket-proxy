@@ -29,7 +29,7 @@ env:
 
 jobs:
   build-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python:
@@ -61,7 +61,7 @@ jobs:
       # Run tests
       - run: poetry run pytest --prebuild
   build-push:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     services:
       registry:
         image: registry:2
