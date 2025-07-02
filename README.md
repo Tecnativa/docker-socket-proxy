@@ -41,14 +41,11 @@ never happen.
 
         $ docker container run \
             -d \
-            --group-add "$(getent group docker | cut -d: -f3)" \
             --name dockerproxy \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -p 127.0.0.1:2375:2375 \
             tecnativa/docker-socket-proxy
 
-    The `--group-add` adds the container's user (`haproxy`) to the `docker` group, allowing access to the Docker socket. This assumes that the `docker` group exists and has access to the Docker socket.
-    
     An additional `--privileged` flag is required in some SELinux/AppArmor contexts, because the Docker socket is considered a privileged resource and might otherwise be blocked.
 
 2.  Connect your local docker client to that socket:
