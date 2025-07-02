@@ -37,16 +37,16 @@ never happen.
 
 ## Usage
 
-1.  Run the API proxy (`--privileged` flag is required here because it connects with the
-    docker socket, which is a privileged connection in some SELinux/AppArmor contexts
-    and would get locked otherwise):
+1.  Run the API proxy:
 
         $ docker container run \
-            -d --privileged \
+            -d \
             --name dockerproxy \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -p 127.0.0.1:2375:2375 \
             tecnativa/docker-socket-proxy
+
+    An additional `--privileged` flag is required in some SELinux/AppArmor contexts, because the Docker socket is considered a privileged resource and might otherwise be blocked.
 
 2.  Connect your local docker client to that socket:
 

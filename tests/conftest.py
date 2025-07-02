@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import grp
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -56,6 +57,7 @@ def proxy_factory(image):
     @contextmanager
     def _proxy(**env_vars):
         container_id = None
+        docker_gid = grp.getgrnam("docker").gr_gid
         env_list = [f"--env={key}={value}" for key, value in env_vars.items()]
         _logger.info(f"Starting {image} container with: {env_list}")
         try:
@@ -66,6 +68,7 @@ def proxy_factory(image):
                 "--privileged",
                 "--publish=2375",
                 "--volume=/var/run/docker.sock:/var/run/docker.sock",
+                f"--group-add={docker_gid}",
                 *env_list,
                 image,
             ).strip()

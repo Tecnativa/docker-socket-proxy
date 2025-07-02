@@ -3,6 +3,7 @@ name = "docker-socket-proxy"
 version = "0.0.0"
 description = ""
 authors = ["Tecnativa"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8"
