@@ -206,6 +206,7 @@ info, notice, warning, err, crit, alert and emerg.
 -   [1.29](https://docs.docker.com/engine/api/v1.29/)
 -   [1.30](https://docs.docker.com/engine/api/v1.30/)
 -   [1.37](https://docs.docker.com/engine/api/v1.37/)
+-   [1.51](https://docs.docker.com/engine/api/v1.51/)
 
 ## Image tags
 
