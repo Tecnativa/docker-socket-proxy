@@ -69,7 +69,7 @@ jobs:
           - 5000:5000
     env:
       DOCKER_IMAGE_NAME: ${{ github.repository }}
-      DOCKERHUB_IMAGE_NAME: tecnativa/docker-socket-proxy
+      DOCKERHUB_IMAGE_NAME: niklasteichmann/docker-socket-proxy
       PUSH: ${{ toJSON(github.event_name != 'pull_request') }}
     steps:
       # Set up Docker Environment
