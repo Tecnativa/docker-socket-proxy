@@ -7,3 +7,4 @@ adduser haproxy "$DOCKER_GROUP"
 
 # continue as haproxy user, preserving entrypoint parameters
 su -s /bin/sh -c 'start-haproxy.sh "$@"' haproxy -- "$@"
+
