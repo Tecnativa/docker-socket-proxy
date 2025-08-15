@@ -1,7 +1,7 @@
+import grp
 import json
 import logging
 import time
-import grp
 from contextlib import contextmanager
 from pathlib import Path
 

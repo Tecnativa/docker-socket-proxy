@@ -46,7 +46,9 @@ never happen.
             -p 127.0.0.1:2375:2375 \
             tecnativa/docker-socket-proxy
 
-    An additional `--privileged` flag is required in some SELinux/AppArmor contexts, because the Docker socket is considered a privileged resource and might otherwise be blocked.
+    An additional `--privileged` flag is required in some SELinux/AppArmor contexts,
+    because the Docker socket is considered a privileged resource and might otherwise be
+    blocked.
 
 2.  Connect your local docker client to that socket:
 

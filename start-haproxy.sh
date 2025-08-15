@@ -3,7 +3,7 @@ set -e
 
 # Normalize the input for DISABLE_IPV6 to lowercase
 DISABLE_IPV6_LOWER=$(echo "$DISABLE_IPV6" | tr '[:upper:]' '[:lower:]')
- 
+
 # Check for different representations of 'true' and set BIND_PORT and BIND_OPTIONS accordingly
 case "$DISABLE_IPV6_LOWER" in
     1|true|yes)
@@ -15,7 +15,7 @@ case "$DISABLE_IPV6_LOWER" in
         export BIND_OPTIONS='v4v6'
         ;;
 esac
- 
+
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
 	set -- haproxy "$@"
@@ -28,5 +28,6 @@ if [ "$1" = 'haproxy' ]; then
 	#   -db -- disables background mode
 	set -- haproxy -W -db "$@"
 fi
- 
+
 exec "$@"
+

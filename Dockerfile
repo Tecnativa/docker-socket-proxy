@@ -35,3 +35,4 @@ COPY docker-entrypoint.sh /usr/local/bin/
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 COPY start-haproxy.sh /usr/local/bin/
 USER root
+
