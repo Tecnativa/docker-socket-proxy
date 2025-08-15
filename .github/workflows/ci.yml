@@ -5,6 +5,7 @@ name: Build, Test & Deploy
   push:
     branches:
       - master
+      - build-own-image
     tags:
       - "v*"
   schedule:
