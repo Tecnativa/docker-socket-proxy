@@ -72,9 +72,31 @@ def test_network_post_permissions(proxy_factory):
         allowed_calls = [
             ("network", "ls"),
             ("network", "create", "foo"),
-            ("network", "rm", "foo"),
         ]
         forbidden_calls = []
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_network_delete_permissions(proxy_factory):
+    with proxy_factory(NETWORKS=1, DELETE=1):
+        allowed_calls = [
+            ("network", "rm", "foo"),
+            ("network", "rm", "-f", "foobarfoo"),
+        ]
+        forbidden_calls = [
+            ("network", "create", "foobarfoo"),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_network_delete_permissions_v2(proxy_factory):
+    with proxy_factory(NETWORKS=1, POST=1):
+        allowed_calls = [
+            ("network", "create", "foobarfoo"),
+        ]
+        forbidden_calls = [
+            ("network", "rm", "foobarfoo"),
+        ]
         _check_permissions(allowed_calls, forbidden_calls)
 
 
@@ -84,4 +106,51 @@ def test_exec_permissions(proxy_factory):
             ("exec", container_id, "ls"),
         ]
         forbidden_calls = []
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_image_delete_permissions_v1(proxy_factory):
+    with proxy_factory(DELETE=1, ALLOW_IMAGES_DELETE=1, IMAGES=1, POST=1):
+        allowed_calls = [
+            ("pull", "alpine"),
+            ("image", "rmi", "alpine"),
+        ]
+        forbidden_calls = []
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_image_delete_permissions_v2(proxy_factory):
+    with proxy_factory(IMAGES=1, POST=1, DELETE=1):
+        allowed_calls = [
+            ("pull", "alpine"),
+            ("image", "ls"),
+            ("image", "inspect", "alpine"),
+        ]
+        forbidden_calls = [
+            ("image", "rmi", "alpine"),
+            ("image", "rmi", "-f", "alpine"),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_container_delete_permissions_v2(proxy_factory):
+    with proxy_factory(
+        CONTAINERS=1,
+        DELETE=1,
+        ALLOW_START=1,
+        ALLOW_CONTAINERS_DELETE=1,
+        IMAGES=1,
+        POST=1,
+    ):
+        allowed_calls = [
+            ("pull", "alpine"),
+            ("container", "run", "-dt", "--rm", "--name", "alpine", "alpine"),
+            ("container", "rm", "-f", "alpine"),
+            # ("image", "rmi", "alpine"),
+            # ("image", "rmi", "-f", "alpine"),
+        ]
+        forbidden_calls = [
+            ("image", "rmi", "alpine"),
+            ("image", "rmi", "-f", "alpine"),
+        ]
         _check_permissions(allowed_calls, forbidden_calls)
