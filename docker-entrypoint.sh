@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Raise default nofile limit for HAProxy v3
+ulimit -n 10000 2>/dev/null || true
+
 # Normalize the input for DISABLE_IPV6 to lowercase
 DISABLE_IPV6_LOWER=$(echo "$DISABLE_IPV6" | tr '[:upper:]' '[:lower:]')
 
