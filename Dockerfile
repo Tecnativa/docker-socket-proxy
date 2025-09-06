@@ -30,7 +30,11 @@ ENV ALLOW_RESTARTS=0 \
     SYSTEM=0 \
     TASKS=0 \
     VERSION=1 \
-    VOLUMES=0
+    VOLUMES=0 \
+    DELETE=0 \
+    ALLOW_IMAGES_DELETE=0 \
+    ALLOW_NETWORKS_DELETE=1 \
+    ALLOW_CONTAINERS_DELETE=0
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg.template
 USER root
