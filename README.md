@@ -28,10 +28,8 @@ never happen.
 -   Never expose this container's port to a public network. Only to a Docker networks
     where only reside the proxy itself and the service that uses it.
 -   Revoke access to any API section that you consider your service should not need.
--   This image does not include TLS support, just plain HTTP proxy to the host Docker
-    Unix socket (which is not TLS protected even if you configured your host for TLS
-    protection). This is by design because you are supposed to restrict access to it
-    through Docker's built-in firewall.
+-   By default, this image runs in plain HTTP mode. Enable TLS when traffic can cross
+    untrusted networks.
 -   [Read the docs](#supported-api-versions) for the API version you are using, and
     **know what you are doing**.
 
@@ -79,8 +77,35 @@ never happen.
         Request forbidden by administrative rules.
         </body></html>
 
-The same will happen to any containers that use this proxy's `2375` port to access the
+The same will happen to any containers that use this proxy's port to access the
 Docker socket API.
+
+## Enable TLS
+
+TLS is disabled by default. To enable it, provide a server PEM file (certificate plus
+private key), mount it into the container, and set `TLS=1`.
+
+```sh
+docker container run \
+    -d --privileged \
+    --name dockerproxy \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "$(pwd)/certs:/certs:ro" \
+    -e TLS=1 \
+    -e TLS_CERT_PATH=/certs/server.pem \
+    -p 127.0.0.1:2376:2376 \
+    tecnativa/docker-socket-proxy
+```
+
+Then configure your Docker client for TLS (for example with `DOCKER_TLS_VERIFY=1` and
+`DOCKER_CERT_PATH` containing `ca.pem`, `cert.pem`, and `key.pem`).
+
+### Optional mTLS
+
+To require client certificates (mTLS), also set:
+
+-   `TLS_VERIFY_CLIENT=1`
+-   `TLS_CLIENT_CA_CERT_PATH=/path/to/ca.pem`
 
 ## Grant or revoke access to certain API sections
 
@@ -154,6 +179,20 @@ environment variable.
 For example, [balenaOS](https://www.balena.io/os/) exposes its socket at
 `/var/run/balena-engine.sock`. To accommodate this, merely set the `SOCKET_PATH`
 environment variable to `/var/run/balena-engine.sock`.
+
+## Bind and TLS environment variables
+
+-   `BIND_CONFIG`: Full HAProxy `bind` value override. When set, it takes precedence
+    over all bind-related environment variables below.
+-   `BIND_PORT`: Port used by the auto-generated bind configuration.
+-   `DISABLE_IPV6`: When true, bind in IPv4-only mode.
+-   `TLS`: Set to `1` to enable TLS on the frontend listener.
+-   `TLS_CERT_PATH`: Path to the server PEM file used when `TLS=1`.
+-   `TLS_VERIFY_CLIENT`: Set to `1` to require client certificates (mTLS).
+-   `TLS_CLIENT_CA_CERT_PATH`: Path to the CA file used to validate client certs when
+    `TLS_VERIFY_CLIENT=1`.
+
+If `BIND_PORT` is not set, it defaults to `2375` in plain mode and `2376` in TLS mode.
 
 ## Development
 
