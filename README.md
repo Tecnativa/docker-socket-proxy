@@ -4,6 +4,24 @@
 
 # Docker Socket Proxy
 
+> **Fork notice:** This is a fork of [Tecnativa/docker-socket-proxy][upstream] with one
+> additional security hardening: **container environment variables are stripped from
+> inspect responses**. With `CONTAINERS=1` enabled, the upstream proxy exposes the full
+> output of `GET /containers/{id}/json`, which includes `Config.Env` — a common place
+> where secrets (DB passwords, API keys, tokens) end up. This fork rewrites those
+> responses on the fly so `Env` is always returned as an empty array `[]`, regardless
+> of what the container actually has set.
+>
+> Everything else (labels, state, stats, network info, mounts, …) is forwarded
+> untouched, so consumers like [Homepage][gethomepage], Traefik, and similar tools
+> continue to work normally.
+>
+> Implementation: a small Lua script ([`filter_inspect.lua`](./filter_inspect.lua))
+> loaded by HAProxy that filters response bodies on the inspect endpoint only.
+
+[upstream]: https://github.com/Tecnativa/docker-socket-proxy
+[gethomepage]: https://gethomepage.dev/
+
 ## What?
 
 This is a security-enhanced proxy for the Docker Socket.

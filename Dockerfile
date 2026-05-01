@@ -33,6 +33,7 @@ ENV ALLOW_RESTARTS=0 \
     VOLUMES=0
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg.template
+COPY filter_inspect.lua /usr/local/etc/haproxy/filter_inspect.lua
 RUN touch /var/lib/haproxy/server-state
 USER root
 CMD ["haproxy", "-f", "/tmp/haproxy.cfg"]
