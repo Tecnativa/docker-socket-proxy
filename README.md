@@ -130,8 +130,16 @@ extremely critical but can expose some information that your service does not ne
 -   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
 -   `ALLOW_PAUSE` (containers/`id`/`pause`)
 -   `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
+-   `ALLOW_EXEC` (containers/`id`/`exec`) — required IN ADDITION to `CONTAINERS=1` to create
+    new exec instances. Without it, even with `CONTAINERS=1 POST=1`, `docker exec` is denied.
+-   `ALLOW_KILL` (containers/`id`/`kill`) — required IN ADDITION to `CONTAINERS=1` to kill a
+    container. Without it, `docker kill` is denied even with `CONTAINERS=1 POST=1`.
+-   `ALLOW_DELETE` (`DELETE` containers/`id`) — required IN ADDITION to `CONTAINERS=1` to
+    remove a container. Without it, `docker rm` is denied even with `CONTAINERS=1 POST=1`.
 -   `DISTRIBUTION`
--   `EXEC`
+-   `EXEC` — controls only `/exec/{id}/start|resize|inspect` (operations on
+    *existing* exec sessions). Creation of new exec instances via
+    `POST /containers/{id}/exec` is controlled by `ALLOW_EXEC` (above).
 -   `GRPC`
 -   `IMAGES`
 -   `INFO`
