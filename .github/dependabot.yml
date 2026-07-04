@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Base image digest in the Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Python dev dependencies (pyproject.toml / poetry.lock)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
