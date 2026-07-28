@@ -79,9 +79,47 @@ def test_network_post_permissions(proxy_factory):
 
 
 def test_exec_permissions(proxy_factory):
-    with proxy_factory(CONTAINERS=1, EXEC=1, POST=1) as container_id:
+    # ALLOW_EXEC=1 is required IN ADDITION to CONTAINERS+EXEC+POST to actually
+    # create new exec sessions, see issue #114. EXEC controls only operations
+    # on already-created exec sessions (/exec/<id>/start|resize|inspect).
+    with proxy_factory(CONTAINERS=1, EXEC=1, POST=1, ALLOW_EXEC=1) as container_id:
         allowed_calls = [
             ("exec", container_id, "ls"),
         ]
         forbidden_calls = []
         _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_exec_denied_without_allow_exec(proxy_factory):
+    """CONTAINERS=1 + POST=1 must NOT be enough to create new exec sessions.
+
+    Regression test for https://github.com/Tecnativa/docker-socket-proxy/issues/114.
+    EXEC controls /exec/<id>/start (existing sessions); creating a new exec
+    instance via POST /containers/<id>/exec requires ALLOW_EXEC.
+    """
+    with proxy_factory(CONTAINERS=1, EXEC=1, POST=1) as container_id:
+        forbidden_calls = [
+            ("exec", container_id, "ls"),
+        ]
+        _check_permissions((), forbidden_calls)
+
+
+def test_delete_denied_without_allow_delete(proxy_factory):
+    """CONTAINERS=1 + POST=1 must NOT allow DELETE /containers/<id>.
+
+    Regression test for https://github.com/Tecnativa/docker-socket-proxy/issues/114.
+    """
+    with proxy_factory(CONTAINERS=1, POST=1) as container_id:
+        forbidden_calls = [
+            ("rm", "-f", container_id),
+        ]
+        _check_permissions((), forbidden_calls)
+
+
+def test_kill_denied_without_allow_kill(proxy_factory):
+    """CONTAINERS=1 + POST=1 must NOT allow `docker kill`."""
+    with proxy_factory(CONTAINERS=1, POST=1) as container_id:
+        forbidden_calls = [
+            ("kill", container_id),
+        ]
+        _check_permissions((), forbidden_calls)
