@@ -1,6 +1,6 @@
 FROM haproxy:3.4.2-alpine
 
-EXPOSE 2375
+EXPOSE 2375 2376
 ENV ALLOW_RESTARTS=0 \
     ALLOW_STOP=0 \
     ALLOW_START=0 \
@@ -26,6 +26,10 @@ ENV ALLOW_RESTARTS=0 \
     SERVICES=0 \
     SESSION=0 \
     SOCKET_PATH=/var/run/docker.sock \
+    TLS=0 \
+    TLS_CERT_PATH=/run/secrets/server.pem \
+    TLS_CLIENT_CA_CERT_PATH=/run/secrets/client-ca.pem \
+    TLS_VERIFY_CLIENT=0 \
     SWARM=0 \
     SYSTEM=0 \
     TASKS=0 \

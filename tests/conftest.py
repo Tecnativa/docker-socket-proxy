@@ -54,9 +54,12 @@ def proxy_factory(image):
     """
 
     @contextmanager
-    def _proxy(**env_vars):
+    def _proxy(publish_port=2375, mounts=None, docker_env=None, **env_vars):
         container_id = None
         env_list = [f"--env={key}={value}" for key, value in env_vars.items()]
+        volume_args = ["--volume=/var/run/docker.sock:/var/run/docker.sock"]
+        if mounts:
+            volume_args.extend([f"--volume={mount}" for mount in mounts])
         _logger.info(f"Starting {image} container with: {env_list}")
         try:
             container_id = docker(
@@ -64,8 +67,8 @@ def proxy_factory(image):
                 "run",
                 "--detach",
                 "--privileged",
-                "--publish=2375",
-                "--volume=/var/run/docker.sock:/var/run/docker.sock",
+                f"--publish={publish_port}",
+                *volume_args,
                 *env_list,
                 image,
             ).strip()
@@ -73,10 +76,15 @@ def proxy_factory(image):
             container_data = json.loads(
                 docker("container", "inspect", container_id.strip())
             )
-            socket_port = container_data[0]["NetworkSettings"]["Ports"]["2375/tcp"][0][
+            socket_port = container_data[0]["NetworkSettings"]["Ports"][
+                f"{publish_port}/tcp"
+            ][0][
                 "HostPort"
             ]
-            with local.env(DOCKER_HOST=f"tcp://localhost:{socket_port}"):
+            env = {"DOCKER_HOST": f"tcp://localhost:{socket_port}"}
+            if docker_env:
+                env.update(docker_env)
+            with local.env(**env):
                 yield container_id
         finally:
             if container_id:
