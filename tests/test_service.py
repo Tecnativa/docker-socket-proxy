@@ -43,10 +43,63 @@ def test_default_permissions(proxy_factory):
 def test_container_permissions(proxy_factory):
     with proxy_factory(CONTAINERS=1) as test_container:
         allowed_calls = [
+            ("inspect", test_container),
+        ]
+        forbidden_calls = [
+            ("logs", test_container),
+            ("export", test_container),
+            ("cp", f"{test_container}:/etc/passwd", "-"),
+            ("wait", test_container),
+            ("run", "--rm", "alpine"),
+            ("rm", "-f", test_container),
+            ("restart", test_container),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_container_logs_permissions(proxy_factory):
+    with proxy_factory(CONTAINERS=1, ALLOW_LOGS=1) as test_container:
+        allowed_calls = [
             ("logs", test_container),
             ("inspect", test_container),
         ]
         forbidden_calls = [
+            ("export", test_container),
+            ("cp", f"{test_container}:/etc/passwd", "-"),
+            ("wait", test_container),
+            ("run", "--rm", "alpine"),
+            ("rm", "-f", test_container),
+            ("restart", test_container),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_container_export_permissions(proxy_factory):
+    with proxy_factory(CONTAINERS=1, ALLOW_EXPORT=1) as test_container:
+        allowed_calls = [
+            ("export", test_container),
+            ("inspect", test_container),
+        ]
+        forbidden_calls = [
+            ("logs", test_container),
+            ("cp", f"{test_container}:/etc/passwd", "-"),
+            ("wait", test_container),
+            ("run", "--rm", "alpine"),
+            ("rm", "-f", test_container),
+            ("restart", test_container),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
+def test_container_archive_permissions(proxy_factory):
+    with proxy_factory(CONTAINERS=1, ALLOW_ARCHIVE=1) as test_container:
+        allowed_calls = [
+            ("cp", f"{test_container}:/etc/passwd", "-"),
+            ("inspect", test_container),
+        ]
+        forbidden_calls = [
+            ("logs", test_container),
+            ("export", test_container),
             ("wait", test_container),
             ("run", "--rm", "alpine"),
             ("rm", "-f", test_container),

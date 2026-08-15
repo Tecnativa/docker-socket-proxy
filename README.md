@@ -121,15 +121,18 @@ default. Maximum caution when enabling these.
 You will possibly need to grant access to some of these API sections, which are not so
 extremely critical but can expose some information that your service does not need.
 
+-   `ALLOW_ARCHIVE` (containers/`id`/`archive`)
+-   `ALLOW_EXPORT` (containers/`id`/`export`)
+-   `ALLOW_LOGS` (containers/`id`/`logs`)
+-   `ALLOW_PAUSE` (containers/`id`/`pause`)
+-   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
+-   `ALLOW_START` (containers/`id`/`start`)
+-   `ALLOW_STOP` (containers/`id`/`stop`)
+-   `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
 -   `BUILD`
 -   `COMMIT`
 -   `CONFIGS`
--   `CONTAINERS`
--   `ALLOW_START` (containers/`id`/`start`)
--   `ALLOW_STOP` (containers/`id`/`stop`)
--   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
--   `ALLOW_PAUSE` (containers/`id`/`pause`)
--   `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
+-   `CONTAINERS`: Grants access to `/containers/*` metadata (listing, inspect, stats). Dangerous sub-paths (`archive`, `export`, `logs`) remain blocked unless explicitly enabled via their respective `ALLOW_*` variables.
 -   `DISTRIBUTION`
 -   `EXEC`
 -   `GRPC`
