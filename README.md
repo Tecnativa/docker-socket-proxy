@@ -115,6 +115,7 @@ default. Maximum caution when enabling these.
 -   `SECRETS`
 -   `POST`: When disabled, only `GET` and `HEAD` operations are allowed, meaning any
     section of the API is read-only.
+-   `PUT`, `PATCH` and `DELETE`: additional HTTP-method toggles, disabled by default.
 
 #### Not always needed
 
@@ -124,14 +125,29 @@ extremely critical but can expose some information that your service does not ne
 -   `BUILD`
 -   `COMMIT`
 -   `CONFIGS`
--   `CONTAINERS`
+-   `CONTAINERS`: Grants access to `/containers/*` metadata (listing, inspect, stats).
+    Dangerous sub-paths (`archive`, `attach`, `export`, `logs`) remain blocked unless
+    explicitly enabled via their respective `ALLOW_*` variables.
+-   `ALLOW_ARCHIVE` (containers/`id`/`archive`)
+-   `ALLOW_ATTACH` (containers/`id`/`attach`)
+-   `ALLOW_EXPORT` (containers/`id`/`export`)
+-   `ALLOW_LOGS` (containers/`id`/`logs`)
+-   `ALLOW_PAUSE` (containers/`id`/`pause`)
+-   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
 -   `ALLOW_START` (containers/`id`/`start`)
 -   `ALLOW_STOP` (containers/`id`/`stop`)
--   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
--   `ALLOW_PAUSE` (containers/`id`/`pause`)
 -   `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
+-   `ALLOW_EXEC` (containers/`id`/`exec`) — required IN ADDITION to `CONTAINERS=1` to
+    create new exec instances. Without it, even with `CONTAINERS=1 POST=1`,
+    `docker exec` is denied.
+-   `ALLOW_KILL` (containers/`id`/`kill`) — required IN ADDITION to `CONTAINERS=1` to
+    kill a container. Without it, `docker kill` is denied even with
+    `CONTAINERS=1 POST=1`.
+-   `DELETE`: global toggle for the HTTP `DELETE` method.
 -   `DISTRIBUTION`
--   `EXEC`
+-   `EXEC` — controls only `/exec/{id}/start|resize|inspect` (operations on _existing_
+    exec sessions). Creation of new exec instances via `POST /containers/{id}/exec` is
+    controlled by `ALLOW_EXEC` (above).
 -   `GRPC`
 -   `IMAGES`
 -   `INFO`
