@@ -18,151 +18,245 @@ name: Build, Test & Deploy
         required: false
 
 env:
-  LANG: "en_US.utf-8"
-  LC_ALL: "en_US.utf-8"
-  PIP_CACHE_DIR: ${{ github.workspace }}/.cache.~/pip
-  PIPX_HOME: ${{ github.workspace }}/.cache.~/pipx
-  POETRY_CACHE_DIR: ${{ github.workspace }}/.cache.~/pypoetry
-  POETRY_VIRTUALENVS_IN_PROJECT: "true"
-  PYTEST_ADDOPTS: ${{ github.event.inputs.pytest_addopts }}
-  PYTHONIOENCODING: "UTF-8"
-
+  # Indicates what tag matches tecnativa/doodba:latest
+  LATEST_RELEASE: "3.4"
+  DOCKER_BUILD_SUMMARY: false
 jobs:
   build-test:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.platform == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     strategy:
+      fail-fast: false
       matrix:
-        python:
-          - 3.8
-    steps:
-      # Prepare environment
-      - uses: actions/checkout@v2
-      # Set up and run tests
-      - name: Install python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Generate cache key CACHE
-        run:
-          echo "CACHE=${{ secrets.CACHE_DATE }} ${{ runner.os }} $(python -VV |
-          sha256sum | cut -d' ' -f1) ${{ hashFiles('pyproject.toml') }} ${{
-          hashFiles('poetry.lock') }}" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        with:
-          path: |
-            .cache.~
-            .venv
-            ~/.local/bin
-          key: venv ${{ env.CACHE }}
-      - run: pip install poetry
-      - name: Patch $PATH
-        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-      - run: poetry install
-      # Run tests
-      - run: poetry run pytest --prebuild
-  build-push:
-    runs-on: ubuntu-24.04
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
+        haproxy_version: &haproxy-versions ["3.2", "3.4"]
+        platform: ["amd64"]
     env:
-      DOCKER_IMAGE_NAME: ${{ github.repository }}
-      DOCKERHUB_IMAGE_NAME: tecnativa/docker-socket-proxy
-      PUSH: ${{ toJSON(github.event_name != 'pull_request') }}
+      DOCKER_BUILDKIT: 1
+      HAPROXY_VERSION: ${{ matrix.haproxy_version }}
     steps:
-      # Set up Docker Environment
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - &checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - &image-name
+        # This needs to be done here as there is no other way as of June 2026 to
+        # get the lowercase name of the repo (org/reponame)
+        name: downcase image name
+        run: |
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          path: |
-            /tmp/.buildx-cache
-          key: buildx|${{ secrets.CACHE_DATE }}|${{ runner.os }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
+          python-version: "3.12"
+      - uses: docker/setup-compose-action@16feee727cbdc83b6a014e6cc26fec4a79bcf30c # v2.2.0
         with:
-          driver-opts: network=host
-          install: true
-      # Build and push
-      - name: Docker meta for local images
-        id: docker_meta_local
-        uses: crazy-max/ghaction-docker-meta@v4
-        with:
-          images: localhost:5000/${{ env.DOCKER_IMAGE_NAME }}
-          tag-edge: true
-          tag-semver: |
-            {{version}}
-            {{major}}
-            {{major}}.{{minor}}
-      - name: Build and push to local (test) registry
-        uses: docker/build-push-action@v4
+          version: latest
+      - &setup-buildx
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+      - name: Build image
+        uses: &build-push-action docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: ./Dockerfile
-          platforms: |
-            linux/386
-            linux/amd64
-            linux/arm/v6
-            linux/arm/v7
-            linux/arm/v8
-            linux/arm64
-            linux/ppc64le
-            linux/s390x
-          load: false
-          push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          labels: ${{ steps.docker_meta_local.outputs.labels }}
-          tags: ${{ steps.docker_meta_local.outputs.tags }}
-      # Next jobs only happen outside of pull requests and on main branches
-      - name: Login to DockerHub
-        if: ${{ fromJSON(env.PUSH) }}
-        uses: docker/login-action@v3
+          platforms: linux/${{ matrix.platform }}
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME}}:testonly
+          cache-from: &cache-from |
+            type=gha,scope=haproxy-${{ matrix.haproxy_version }}-${{ matrix.platform }}-${{ github.ref_name }}
+            type=gha,scope=haproxy-${{ matrix.haproxy_version }}-${{ matrix.platform }}-${{ github.event.repository.default_branch}}
+      - name: Use default builder for tests
+        run: docker buildx use default
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+      - name: Run tests
+        run: uv run pytest --junit-xml=test-report.xml
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+        with:
+          name: Python unit tests
+          path: test-report.xml
+          reporter: python-xunit
+  build-push:
+    # Push by digest as they only get merged into the final image after tests pass
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on:
+      ${{ matrix.platform.base == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        haproxy_version: *haproxy-versions
+        platform:
+          - base: amd64
+            cross: linux/386,linux/amd64,linux/ppc64le,linux/s390x
+          - base: arm64
+            cross: linux/arm/v6,linux/arm/v7,linux/arm/v8,linux/arm64
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - *image-name
+      - *checkout
+      - *setup-buildx
+      - &dockerhub-login
+        name: Login to Docker Hub
+        uses: &docker-login-action docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login to GitHub Container Registry
-        if: ${{ fromJSON(env.PUSH) }}
-        uses: docker/login-action@v3
+      - &ghcr-login
+        name: Login to GitHub Container Registry
+        uses: *docker-login-action
         with:
           registry: ghcr.io
           username: ${{ secrets.BOT_LOGIN }}
           password: ${{ secrets.BOT_TOKEN }}
-      - name: Docker meta for public images
-        if: ${{ fromJSON(env.PUSH) }}
-        id: docker_meta_public
-        uses: crazy-max/ghaction-docker-meta@v4
-        with:
-          images: |
-            ghcr.io/${{ env.DOCKER_IMAGE_NAME }}
-            ${{ env.DOCKERHUB_IMAGE_NAME }}
-          tag-edge: true
-          tag-semver: |
-            {{version}}
-            {{major}}
-            {{major}}.{{minor}}
-      - name: Build and push to public registry(s)
-        if: ${{ fromJSON(env.PUSH) }}
-        uses: docker/build-push-action@v4
+      - name: Build and push image (docker.io)
+        id: push-dockerhub
+        uses: *build-push-action
         with:
           context: .
           file: ./Dockerfile
-          platforms: |
-            linux/386
-            linux/amd64
-            linux/arm/v6
-            linux/arm/v7
-            linux/arm/v8
-            linux/arm64
-            linux/ppc64le
-            linux/s390x
-          load: false
+          platforms: ${{ matrix.platform.cross }}
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          labels: ${{ steps.docker_meta_public.outputs.labels }}
-          tags: ${{ steps.docker_meta_public.outputs.tags }}
+          cache-from: *cache-from
+          build-args: HAPROXY_VERSION=${{ matrix.haproxy_version }}
+          outputs: |
+            type=image,name=docker.io/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true
+      - name: Build and push image (ghcr.io)
+        id: push-ghcr
+        uses: *build-push-action
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: ${{ matrix.platform.cross }}
+          push: true
+          cache-from: *cache-from
+          build-args: HAPROXY_VERSION=${{ matrix.haproxy_version }}
+          outputs: |
+            type=image,name=ghcr.io/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.push-ghcr.outputs.digest }}"
+          touch "/tmp/digests/ghcr-${digest#sha256:}"
+          digest="${{ steps.push-dockerhub.outputs.digest }}"
+          touch "/tmp/digests/dockerhub-${digest#sha256:}"
+      - name: Upload digest artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: digest-${{ matrix.haproxy_version }}-${{ matrix.platform.base }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+  merge-manifests-release:
+    runs-on: ubuntu-24.04
+    needs: ["build-test", "build-push"]
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    strategy:
+      matrix:
+        haproxy_version: *haproxy-versions
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - *image-name
+      - &download-digests
+        name: Download all digests
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests
+          pattern: digest-${{ matrix.haproxy_version }}-*
+          merge-multiple: true
+      - *setup-buildx
+      - *ghcr-login
+      - &ghcr-meta
+        name: Docker meta ghcr.io
+        id: docker_meta_ghcr
+        uses: &docker-meta-action docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: |
+            ghcr.io/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=pr,prefix=${{ matrix.haproxy_version }}-pr-
+            type=raw,value=${{ matrix.haproxy_version }},enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ matrix.haproxy_version == env.LATEST_RELEASE && github.event_name != 'pull_request' }}
+      - &ghcr-merge-manifests
+        name: Create and push multi-arch manifest (ghcr.io)
+        working-directory: /tmp/digests
+        env:
+          TAGS: ${{ steps.docker_meta_ghcr.outputs.tags }}
+        run: |
+          DIGESTS=$(printf 'ghcr.io/${{ env.IMAGE_NAME }}@sha256:%s ' ghcr-* | sed 's/ghcr-//g')
+          docker buildx imagetools create $(printf -- '--tag %s ' $TAGS) $DIGESTS
+
+      - *dockerhub-login
+      - &dockerhub-meta
+        name: Docker meta dockerhub
+        id: docker_meta_dockerhub
+        uses: *docker-meta-action
+        with:
+          images: |
+            docker.io/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=pr,prefix=${{ matrix.haproxy_version }}-pr-
+            type=raw,value=${{ matrix.haproxy_version }},enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ matrix.haproxy_version == env.LATEST_RELEASE && github.event_name != 'pull_request' }}
+      - &dockerhub-merge-manifests
+        name: Create and push multi-arch manifest (docker.io)
+        working-directory: /tmp/digests
+        env:
+          TAGS: ${{ steps.docker_meta_dockerhub.outputs.tags }}
+        run: |
+          DIGESTS=$(printf 'docker.io/${{ env.IMAGE_NAME }}@sha256:%s ' dockerhub-* | sed 's/dockerhub-//g')
+          docker buildx imagetools create $(printf -- '--tag %s ' $TAGS) $DIGESTS
+  merge-manifests-pr:
+    runs-on: ubuntu-24.04
+    if: >-
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository)
+    needs: build-push
+    strategy:
+      matrix:
+        haproxy_version: *haproxy-versions
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+    steps:
+      - *image-name
+      - *download-digests
+      - *setup-buildx
+      - *ghcr-login
+      - *ghcr-meta
+      - *ghcr-merge-manifests
+      - *dockerhub-login
+      - *dockerhub-meta
+      - *dockerhub-merge-manifests
+      - name: Find Comment
+        if: matrix.haproxy_version == env.LATEST_RELEASE
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Test this PR by using this tag:"
+
+      - name: Create or update comment
+        if: matrix.haproxy_version == env.LATEST_RELEASE
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Test this PR by using this tag:
+            ```
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ env.LATEST_RELEASE }}-pr-${{ github.event.pull_request.number }}
+            ```
+          edit-mode: replace
