@@ -19,7 +19,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--image",
         action="store",
-        default="test:docker-socket-proxy",
+        default="tecnativa/docker-socket-proxy:testonly",
         help="Specify testing image name",
     )
 

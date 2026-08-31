@@ -8,7 +8,7 @@
   "python.pythonPath": ".venv/bin/python",
   "python.testing.pytestEnabled": true,
   "[python]": {
-    "editor.defaultFormatter": "ms-python.python",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true
   }
 }
