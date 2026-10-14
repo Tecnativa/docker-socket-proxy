@@ -37,9 +37,9 @@ never happen.
 
 ## Usage
 
-1.  Run the API proxy (`--privileged` flag is required here because it connects with the
-    docker socket, which is a privileged connection in some SELinux/AppArmor contexts
-    and would get locked otherwise):
+1.  Run the API proxy. `--privileged` is requested so the container can open the Docker
+    socket on hosts where SELinux or AppArmor confines that socket. Hosts that do not
+    confine the socket do not need the flag:
 
         $ docker container run \
             -d --privileged \
@@ -168,32 +168,33 @@ poetry install
 
 ### Testing
 
-To run the tests locally, add `--prebuild` to autobuild the image before testing:
+`--image` selects the image pytest runs. It defaults to `docker-socket-proxy:local`.
+`--prebuild` builds that same tag before the suite starts, which is also what CI runs:
 
 ```sh
 poetry run pytest --prebuild
 ```
 
-By default, the image that the tests use (and optionally prebuild) is named
-`docker-socket-proxy:local`. If you prefer, you can build it separately before testing,
-and remove the `--prebuild` flag, to run the tests with that image you built:
+You can build the default tag yourself and run the suite without `--prebuild`:
 
 ```sh
 docker image build -t docker-socket-proxy:local .
 poetry run pytest
 ```
 
-If you want to use a different image, export the `DOCKER_IMAGE_NAME` env variable with
-the name you want:
+Pass `--image` to use a different tag, with or without `--prebuild`:
 
 ```sh
-# To build it automatically
-env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest --prebuild
+poetry run pytest --prebuild --image my_custom_image
 
-# To prebuild it separately
 docker image build -t my_custom_image .
-env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest
+poetry run pytest --image my_custom_image
 ```
+
+The suite publishes the proxy on `127.0.0.1` only. It requests `--privileged` for the
+same reason as the usage example: so the container can open the Docker socket on hosts
+where SELinux or AppArmor confines it. Hosts that do not confine the socket do not need
+that flag.
 
 ## Logging
 
