@@ -19,7 +19,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--image",
         action="store",
-        default="test:docker-socket-proxy",
+        default="docker-socket-proxy:local",
         help="Specify testing image name",
     )
 
@@ -63,8 +63,11 @@ def proxy_factory(image):
                 "container",
                 "run",
                 "--detach",
+                # Requested so the container can open the Docker socket on hosts
+                # where SELinux or AppArmor confines it. Hosts that do not confine
+                # the socket do not need this flag.
                 "--privileged",
-                "--publish=2375",
+                "--publish=127.0.0.1::2375",
                 "--volume=/var/run/docker.sock:/var/run/docker.sock",
                 *env_list,
                 image,
@@ -73,9 +76,9 @@ def proxy_factory(image):
             container_data = json.loads(
                 docker("container", "inspect", container_id.strip())
             )
-            socket_port = container_data[0]["NetworkSettings"]["Ports"]["2375/tcp"][0][
-                "HostPort"
-            ]
+            published = container_data[0]["NetworkSettings"]["Ports"]["2375/tcp"][0]
+            assert published["HostIp"] == "127.0.0.1"
+            socket_port = published["HostPort"]
             with local.env(DOCKER_HOST=f"tcp://localhost:{socket_port}"):
                 yield container_id
         finally:
