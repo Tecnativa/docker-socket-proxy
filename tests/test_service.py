@@ -78,6 +78,43 @@ def test_network_post_permissions(proxy_factory):
         _check_permissions(allowed_calls, forbidden_calls)
 
 
+@pytest.fixture
+def target_container():
+    """A container to act on, started directly against the docker socket."""
+    container_id = docker(
+        "container", "run", "--detach", "alpine", "sleep", "300"
+    ).strip()
+    try:
+        yield container_id
+    finally:
+        docker("container", "rm", "-f", container_id)
+
+
+def test_granular_permissions_without_post(proxy_factory, target_container):
+    """The ALLOW_* container actions work on their own, without POST=1."""
+    with proxy_factory(
+        ALLOW_START=1,
+        ALLOW_STOP=1,
+        ALLOW_RESTARTS=1,
+        ALLOW_PAUSE=1,
+        ALLOW_UNPAUSE=1,
+    ):
+        allowed_calls = [
+            ("pause", target_container),
+            ("unpause", target_container),
+            ("restart", "--time", "0", target_container),
+            ("stop", "--time", "0", target_container),
+            ("start", target_container),
+            ("kill", target_container),
+        ]
+        forbidden_calls = [
+            ("rm", "-f", target_container),
+            ("run", "--rm", "alpine"),
+            ("network", "create", "foobar"),
+        ]
+        _check_permissions(allowed_calls, forbidden_calls)
+
+
 def test_exec_permissions(proxy_factory):
     with proxy_factory(CONTAINERS=1, EXEC=1, POST=1) as container_id:
         allowed_calls = [
