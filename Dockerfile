@@ -1,6 +1,11 @@
 ARG HAPROXY_VERSION=lts
 FROM haproxy:${HAPROXY_VERSION}-alpine
 
+# Alpine publishes fixes before the haproxy base image is rebuilt with them
+USER root
+RUN apk upgrade --no-cache
+USER haproxy
+
 EXPOSE 2375
 ENV ALLOW_RESTARTS=0 \
     ALLOW_STOP=0 \

@@ -17,7 +17,11 @@ def _check_permissions(allowed_calls, forbidden_calls):
 
 def test_default_permissions(proxy_factory):
     with proxy_factory() as test_container:
-        allowed_calls = (("version",),)
+        allowed_calls = (
+            ("version",),
+            # Bounded window, so the stream ends instead of following
+            ("events", "--since", "1m", "--until", "1s"),
+        )
         forbidden_calls = (
             ("pull", "alpine"),
             ("--rm", "alpine", "--name", test_container),
@@ -43,6 +47,7 @@ def test_default_permissions(proxy_factory):
 def test_container_permissions(proxy_factory):
     with proxy_factory(CONTAINERS=1) as test_container:
         allowed_calls = [
+            ("ps",),
             ("logs", test_container),
             ("inspect", test_container),
         ]
