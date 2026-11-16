@@ -17,7 +17,8 @@ not do.
 
 ## How?
 
-We use the official [Alpine][]-based [HAProxy][] image with a small configuration file.
+We use the official [Alpine][alpine]-based [HAProxy][haproxy] image with a small
+configuration file.
 
 It blocks access to the Docker socket API according to the environment variables you
 set. It returns a `HTTP 403 Forbidden` status for those dangerous requests that should
@@ -158,12 +159,22 @@ environment variable to `/var/run/balena-engine.sock`.
 ## Development
 
 All the dependencies you need to develop this project (apart from Docker itself) are
-managed with [poetry](https://python-poetry.org/).
+managed with [uv](https://docs.astral.sh/uv/).
 
 To set up your development environment, run:
 
 ```
-poetry install
+uv sync
+```
+
+To build the image locally, you can use
+[Docker Bake](https://docs.docker.com/build/bake/) or build directly with docker build
+
+```
+# check docker-bake.hcl for configurable variables
+docker bake --var TAG_SUFFIX=-local-only
+# docker build
+docker image build . -f Dockerfile -t custom_tag
 ```
 
 ### Testing
@@ -171,28 +182,25 @@ poetry install
 To run the tests locally, add `--prebuild` to autobuild the image before testing:
 
 ```sh
-poetry run pytest --prebuild
+uv run pytest --prebuild
 ```
 
 By default, the image that the tests use (and optionally prebuild) is named
-`docker-socket-proxy:local`. If you prefer, you can build it separately before testing,
-and remove the `--prebuild` flag, to run the tests with that image you built:
+`tecnativa/docker-socket-proxy:lts-testonly`. If you prefer, you can build it separately
+before testing, and remove the `--prebuild` flag, to run the tests with that image you
+built:
 
 ```sh
-docker image build -t docker-socket-proxy:local .
-poetry run pytest
+docker bake --var TAG_SUFFIX=-testonly
+uv run pytest
 ```
 
-If you want to use a different image, export the `DOCKER_IMAGE_NAME` env variable with
-the name you want:
+If you want to use a different image, use the --image pytest flag and prebuilt it
+before:
 
 ```sh
-# To build it automatically
-env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest --prebuild
-
-# To prebuild it separately
 docker image build -t my_custom_image .
-env DOCKER_IMAGE_NAME=my_custom_image poetry run pytest
+uv run pytest --image=my_custom_image
 ```
 
 ## Logging
@@ -212,27 +220,32 @@ info, notice, warning, err, crit, alert and emerg.
 
 ## Image tags
 
-Right now, the only supported tags in our container images are the ones following this
+Right now, the only supported tags in our container images are the ones following these
 rules:
 
-1. Each individual git released version will result in an image being tagged with the
-   correspondent `:{{version}}`
-1. `:latest` will refer to the latest _released_ version in git.
-1. `:edge` will be the version that is in the repo's master branch
+1. `:lts` latest image built from haproxy:lts.
+1. `:latest` same as lts.
+1. `:3.4` latest iamge built from haproxy:3.4.
 
-Any other tag you find in our [Docker Hub image][dh-img] is deprecated.
+Images are built weekly, if you need to always use the same image, pin it using its
+[sha](https://docs.docker.com/dhi/explore/security-concepts/digests/).
 
-We recommend using [GitHub Container Registry][ghcr-img] instead.
+Any other tags you find in our [Docker Hub image][dh-img] or [Github Container
+Registry][ghcr-img] are deprecated.
 
 ## Feedback
 
 Please send any issues to the [issue tracker][]. For other kind of feedback, you can use
 [our forum][].
 
+If you want to keep up with important news and changes plase follow the
+[News and announcements](https://github.com/Tecnativa/docker-socket-proxy/discussions/197)
+discussion.
+
 [alpine]: https://alpinelinux.org/
 [dh-img]: https://hub.docker.com/r/tecnativa/docker-socket-proxy
 [ghcr-img]:
-    https://github.com/orgs/Tecnativa/packages/container/package/docker-socket-proxy
+    https://github.com/tecnativa/docker-socket-proxy/pkgs/container/docker-socket-proxy
 [haproxy]: http://www.haproxy.org/
 [issue tracker]: https://github.com/Tecnativa/docker-socket-proxy/issues
 [our forum]: https://github.com/Tecnativa/docker-socket-proxy/discussions
