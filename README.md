@@ -25,15 +25,15 @@ never happen.
 
 ## Security recommendations
 
--   Never expose this container's port to a public network. Only to a Docker networks
-    where only reside the proxy itself and the service that uses it.
--   Revoke access to any API section that you consider your service should not need.
--   This image does not include TLS support, just plain HTTP proxy to the host Docker
-    Unix socket (which is not TLS protected even if you configured your host for TLS
-    protection). This is by design because you are supposed to restrict access to it
-    through Docker's built-in firewall.
--   [Read the docs](#supported-api-versions) for the API version you are using, and
-    **know what you are doing**.
+- Never expose this container's port to a public network. Only to a Docker networks
+  where only reside the proxy itself and the service that uses it.
+- Revoke access to any API section that you consider your service should not need.
+- This image does not include TLS support, just plain HTTP proxy to the host Docker Unix
+  socket (which is not TLS protected even if you configured your host for TLS
+  protection). This is by design because you are supposed to restrict access to it
+  through Docker's built-in firewall.
+- [Read the docs](#supported-api-versions) for the API version you are using, and **know
+  what you are doing**.
 
 ## Usage
 
@@ -92,17 +92,17 @@ parts of the API, etc.).
 
 Possible values for these variables:
 
--   `0` to **revoke** access.
--   `1` to **grant** access.
+- `0` to **revoke** access.
+- `1` to **grant** access.
 
 ### Access granted by default
 
 These API sections are mostly harmless and almost required for any service that uses the
 API, so they are granted by default.
 
--   `EVENTS`
--   `PING`
--   `VERSION`
+- `EVENTS`
+- `PING`
+- `VERSION`
 
 ### Access revoked by default
 
@@ -111,39 +111,39 @@ API, so they are granted by default.
 These API sections are considered security-critical, and thus access is revoked by
 default. Maximum caution when enabling these.
 
--   `AUTH`
--   `SECRETS`
--   `POST`: When disabled, only `GET` and `HEAD` operations are allowed, meaning any
-    section of the API is read-only.
+- `AUTH`
+- `SECRETS`
+- `POST`: When disabled, only `GET` and `HEAD` operations are allowed, meaning any
+  section of the API is read-only.
 
 #### Not always needed
 
 You will possibly need to grant access to some of these API sections, which are not so
 extremely critical but can expose some information that your service does not need.
 
--   `BUILD`
--   `COMMIT`
--   `CONFIGS`
--   `CONTAINERS`
--   `ALLOW_START` (containers/`id`/`start`)
--   `ALLOW_STOP` (containers/`id`/`stop`)
--   `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
--   `ALLOW_PAUSE` (containers/`id`/`pause`)
--   `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
--   `DISTRIBUTION`
--   `EXEC`
--   `GRPC`
--   `IMAGES`
--   `INFO`
--   `NETWORKS`
--   `NODES`
--   `PLUGINS`
--   `SERVICES`
--   `SESSION`
--   `SWARM`
--   `SYSTEM`
--   `TASKS`
--   `VOLUMES`
+- `BUILD`
+- `COMMIT`
+- `CONFIGS`
+- `CONTAINERS`
+- `ALLOW_START` (containers/`id`/`start`)
+- `ALLOW_STOP` (containers/`id`/`stop`)
+- `ALLOW_RESTARTS` (containers/`id`/`stop`|`restart`|`kill`)
+- `ALLOW_PAUSE` (containers/`id`/`pause`)
+- `ALLOW_UNPAUSE` (containers/`id`/`unpause`)
+- `DISTRIBUTION`
+- `EXEC`
+- `GRPC`
+- `IMAGES`
+- `INFO`
+- `NETWORKS`
+- `NODES`
+- `PLUGINS`
+- `SERVICES`
+- `SESSION`
+- `SWARM`
+- `SYSTEM`
+- `TASKS`
+- `VOLUMES`
 
 ## Use a different Docker socket location
 
@@ -203,12 +203,12 @@ info, notice, warning, err, crit, alert and emerg.
 
 ## Supported API versions
 
--   [1.27](https://docs.docker.com/engine/api/v1.27/)
--   [1.28](https://docs.docker.com/engine/api/v1.28/)
--   [1.29](https://docs.docker.com/engine/api/v1.29/)
--   [1.30](https://docs.docker.com/engine/api/v1.30/)
--   [1.37](https://docs.docker.com/engine/api/v1.37/)
--   [1.51](https://docs.docker.com/engine/api/v1.51/)
+- [1.27](https://docs.docker.com/engine/api/v1.27/)
+- [1.28](https://docs.docker.com/engine/api/v1.28/)
+- [1.29](https://docs.docker.com/engine/api/v1.29/)
+- [1.30](https://docs.docker.com/engine/api/v1.30/)
+- [1.37](https://docs.docker.com/engine/api/v1.37/)
+- [1.51](https://docs.docker.com/engine/api/v1.51/)
 
 ## Image tags
 
