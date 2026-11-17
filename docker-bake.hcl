@@ -45,6 +45,8 @@ target "socket_proxy" {
   name       = replace(version, ".", "_")
   context    = "."
   dockerfile = "Dockerfile"
+  # A cached layer would skip the apk upgrade while the base image is unchanged
+  no-cache   = true
   platforms  = split(",", PLATFORMS)
   args = {
     HAPROXY_VERSION = version
